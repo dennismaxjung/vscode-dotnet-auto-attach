@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         // Display a message box to the user
         vscode.window.showInformationMessage('Hello World!');
+        AutoAttachService.Stop();
     });
 
     context.subscriptions.push(disposable);

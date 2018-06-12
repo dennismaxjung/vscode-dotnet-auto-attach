@@ -3,7 +3,9 @@ import * as vscode from "vscode";
 export default class DebuggerService {
   public static AttachDebugger(
     pid: number,
-    cmd: string,
     baseConfig: vscode.DebugConfiguration
-  ): void {}
+  ): void {
+    baseConfig.processId = String(pid);
+    vscode.debug.startDebugging(undefined, baseConfig);
+  }
 }
