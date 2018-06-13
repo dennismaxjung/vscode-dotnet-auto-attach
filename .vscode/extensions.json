@@ -5,6 +5,8 @@
     "eg2.tslint",
     "coenraads.bracket-pair-colorizer",
     "eamodio.gitlens",
-    "christian-kohler.path-intellisense"
+    "christian-kohler.path-intellisense",
+    "blairleduc.touch-bar-display",
+    "fatihacet.gitlab-workflow"
   ]
 }
