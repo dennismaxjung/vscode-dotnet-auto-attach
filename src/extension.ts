@@ -1,3 +1,12 @@
+/*
+ * @file Contains the vscode extension.
+ * @Author: Dennis Jung
+ * @Author: Konrad Müller
+ * @Date: 2018-06-13 20:32:01
+ * @Last Modified by: Dennis Jung
+ * @Last Modified time: 2018-06-13 20:33:54
+ */
+
 "use strict";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below

@@ -1,3 +1,14 @@
+/*
+ * @file Contains the ProcessService.
+ * @Author: Dennis Jung
+ * @Author: Konrad Müller
+ * @Date: 2018-06-13 20:34:03
+ * @Last Modified by: Dennis Jung
+ * @Last Modified time: 2018-06-13 20:34:03
+ */
+
+
+"use strict";
 import * as child_process from "child_process";
 export default class ProcessService {
 	public static GetProcesses(

@@ -7,6 +7,8 @@
     "eamodio.gitlens",
     "christian-kohler.path-intellisense",
     "blairleduc.touch-bar-display",
-    "fatihacet.gitlab-workflow"
+    "fatihacet.gitlab-workflow",
+    "joelday.docthis",
+    "mikey.vscode-fileheader"
   ]
 }
