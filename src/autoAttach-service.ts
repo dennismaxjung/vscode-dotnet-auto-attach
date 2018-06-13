@@ -1,4 +1,4 @@
-import ProcessService from "./process-service";
+import ProcessService, { ProcessDetail } from "./process-service";
 import DebuggerService from "./debugger-service";
 import * as vscode from "vscode";
 
@@ -6,7 +6,7 @@ import * as vscode from "vscode";
 export default class AutoAttachService {
   private static interval: NodeJS.Timer;
   private static pollInterval: number = 1000;
-  private static pidsInDebug: Set<number> = new Set<number>();
+
   private static defaultConfig: vscode.DebugConfiguration = {
     type: "coreclr",
     request: "attach",
@@ -14,30 +14,36 @@ export default class AutoAttachService {
   };
 
   public static Start(): void {
-
-    this.interval = setInterval(()=>{
-      
-      ProcessService.GetProcesses((elements) => {
+    DebuggerService.Initialize();
+    this.interval = setInterval(() => {
+      ProcessService.GetProcesses(elements => {
         for (let element of elements) {
           if (
             (element.cml.startsWith('"dotnet" exec ') ||
               element.cml.startsWith("dotnet exec ")) &&
-            !this.pidsInDebug.has(element.pid)
+            this.CheckForWorkspace(element)
           ) {
-            this.StartDebug(element.pid);
+            DebuggerService.AttachDebugger(element.pid, this.defaultConfig);
           }
         }
       });
-    },this.pollInterval);
+    }, this.pollInterval);
   }
 
-  private static StartDebug(pid: number): void {
-    this.pidsInDebug.add(pid);
-    DebuggerService.AttachDebugger(pid, this.defaultConfig);
+  private static CheckForWorkspace(process: ProcessDetail): boolean {
+    if (vscode.workspace.workspaceFolders) {
+      for(var element of vscode.workspace.workspaceFolders) {
+        var path = vscode.Uri.file(process.cml.replace("dotnet exec ", "").replace('"dotnet" exec ', "").replace('"', ""));
+        if (path.fsPath.includes(element.uri.fsPath)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   public static Stop(): void {
     clearInterval(this.interval);
-    this.pidsInDebug.clear();
+    DebuggerService.Terminate();
   }
 }
