@@ -7,7 +7,6 @@
  * @Last Modified time: 2018-06-13 20:33:01
  */
 
-
 "use strict";
 import * as vscode from "vscode";
 import DebuggerService from "./debugger-service";
