@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 17:41:46
+ * @Last Modified time: 2018-06-15 19:31:58
  */
 
 import {
@@ -119,11 +119,18 @@ export default class TaskService implements Disposable {
 				});
 			}
 		}
-
+		let projectName = "";
+		if (projectUri) {
+			const name_regex = /^.+(\/|\\)(.+).csproj/;
+			let matches = name_regex.exec(projectUri.fsPath);
+			if (matches && matches.length === 3) {
+				projectName = matches[2];
+			}
+		}
 		let task: Task = new Task(
-			{ type: "" } as TaskDefinition,
+			{ type: "Watch " + projectName } as TaskDefinition,
 			config.workspace,
-			"Watch",
+			"Watch" + " " + projectName,
 			"DotNet Auto Attach",
 			new ShellExecution(command, {
 				env: config.env,

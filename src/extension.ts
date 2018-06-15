@@ -4,14 +4,13 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:32:01
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 15:30:15
+ * @Last Modified time: 2018-06-15 19:10:35
  */
 
 "use strict";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import AutoAttachDebugConfigProvider from "./autoAttach-configProvider";
 import AutoAttachService from "./autoattach-service";
 import AutoAttach from "./rework/autoAttach";
 

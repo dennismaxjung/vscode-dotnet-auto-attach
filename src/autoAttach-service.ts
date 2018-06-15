@@ -4,12 +4,11 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:32:28
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-13 20:33:01
+ * @Last Modified time: 2018-06-15 19:11:36
  */
 
 "use strict";
 import * as vscode from "vscode";
-import DebuggerService from "./debugger-service";
 import ProcessService, { ProcessDetail } from "./process-service";
 import AutoAttach from "./rework/autoAttach";
 
@@ -44,7 +43,7 @@ export default class AutoAttachService {
 	 * @memberof AutoAttachService
 	 */
 	public static Start(): void {
-		DebuggerService.Initialize();
+		//DebuggerService.Initialize();
 		this.interval = setInterval(() => {
 			ProcessService.GetProcesses(elements => {
 				for (let element of elements) {
@@ -105,6 +104,5 @@ export default class AutoAttachService {
 	 */
 	public static Stop(): void {
 		clearInterval(this.interval);
-		DebuggerService.Terminate();
 	}
 }

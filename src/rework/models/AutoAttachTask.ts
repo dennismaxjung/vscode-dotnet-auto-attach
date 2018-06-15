@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:34:31
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 15:21:49
+ * @Last Modified time: 2018-06-15 19:19:14
  */
 
 import { ShellExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
