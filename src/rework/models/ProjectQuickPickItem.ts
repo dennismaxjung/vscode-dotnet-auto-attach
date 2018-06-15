@@ -10,7 +10,8 @@
 import { QuickPickItem, Uri } from "vscode";
 
 /**
- * The ProjectQuickPickItem.
+ * The ProjectQuickPickItem. Represents Project that can be selected from
+ * a list of projects.
  *
  * @export
  * @class ProjectQuickPickItem
@@ -30,13 +31,34 @@ export default class ProjectQuickPickItem implements QuickPickItem {
 		}
 		this.detail = uri.fsPath;
 		this.uri = uri;
-
 	}
+	/**
+	 * A human readable string which is rendered prominent.
+	 */
 	public label: string = "";
-	public description?: string | undefined;
-	public detail?: string | undefined;
-	public picked?: boolean | undefined;
+
+	/**
+	 * A human readable string which is rendered less prominent.
+	 */
+	public description?: string;
+
+	/**
+	 * A human readable string which is rendered less prominent.
+	 */
+	public detail?: string;
+
+	/**
+	 * Optional flag indicating if this item is picked initially.
+	 * (Only honored when the picker allows multiple selections.)
+	 *
+	 * @see [QuickPickOptions.canPickMany](#QuickPickOptions.canPickMany)
+	 */
+	public picked?: boolean;
+	/**
+	 * The Uri of the Project which is not rendered.
+	 *
+	 * @type {Uri}
+	 * @memberof ProjectQuickPickItem
+	 */
 	public readonly uri: Uri;
-
-
 }

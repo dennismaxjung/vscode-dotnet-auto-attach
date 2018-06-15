@@ -19,14 +19,17 @@ import AutoAttach from "../autoAttach";
  * @class DebuggerService
  */
 export default class DebuggerService implements Disposable {
-
 	/**
 	 * Creates an instance of DebuggerService.
 	 * @memberof DebuggerService
 	 */
 	public constructor() {
 		this.disposables = new Set<Disposable>();
-		this.disposables.add(debug.onDidTerminateDebugSession(DebuggerService.TryToRemoveDisconnectedDebugSession));
+		this.disposables.add(
+			debug.onDidTerminateDebugSession(
+				DebuggerService.TryToRemoveDisconnectedDebugSession
+			)
+		);
 	}
 	/**
 	 * A list of all disposables.
@@ -45,7 +48,9 @@ export default class DebuggerService implements Disposable {
 	 * @param {vscode.DebugSession} session
 	 * @memberof DebuggerService
 	 */
-	private static TryToRemoveDisconnectedDebugSession(session: vscode.DebugSession): void {
+	private static TryToRemoveDisconnectedDebugSession(
+		session: vscode.DebugSession
+	): void {
 		AutoAttach.Cache.RunningDebugs.forEach((k, v) => {
 			if (v === session.name) {
 				setTimeout(() => {
@@ -62,8 +67,14 @@ export default class DebuggerService implements Disposable {
 	 * @param {vscode.DebugConfiguration} baseConfig
 	 * @memberof DebuggerService
 	 */
-	public AttachDotNetDebugger(pid: number, baseConfig: vscode.DebugConfiguration, path: string): void {
-		let task = AutoAttach.Cache.RunningAutoAttachTasks.values().find(t => path.startsWith(t.Workspace.uri.fsPath));
+	public AttachDotNetDebugger(
+		pid: number,
+		baseConfig: vscode.DebugConfiguration,
+		path: string
+	): void {
+		let task = AutoAttach.Cache.RunningAutoAttachTasks.values().find(t =>
+			path.startsWith(t.Workspace.uri.fsPath)
+		);
 		if (
 			!AutoAttach.Cache.RunningDebugs.containsKey(pid) &&
 			!AutoAttach.Cache.DisconnectedDebugs.has(pid) &&
@@ -73,21 +84,23 @@ export default class DebuggerService implements Disposable {
 			baseConfig.name += " - " + baseConfig.processId;
 			AutoAttach.Cache.RunningDebugs.setValue(pid, baseConfig.name);
 			vscode.debug.startDebugging(undefined, baseConfig);
-		} else if (
-			AutoAttach.Cache.DisconnectedDebugs.has(pid) &&
-			task
-		) {
+		} else if (AutoAttach.Cache.DisconnectedDebugs.has(pid) && task) {
 			AutoAttach.Cache.RunningDebugs.setValue(pid, "");
 			AutoAttach.Cache.DisconnectedDebugs.delete(pid);
 
 			let project = "";
-			const name_regex = /^.+(\/|\\)(.+.csproj)/;
-			let matches = name_regex.exec(task.Workspace.uri.fsPath);
+			const name_regex = /^dotnet watch --project '.+(\\|\/)(.+.csproj)' run/;
+			let matches = name_regex.exec(task.Project);
 			if (matches && matches.length === 3) {
 				project = matches[2];
 			}
 			vscode.window
-				.showInformationMessage(`Debug disconnected.\nReattach to ${project} (${pid}) ?`, "Yes", "No")
+				.showInformationMessage(
+					`Debug disconnected. Reattach to ${project} (${pid}) ?`,
+					"Yes",
+					"No",
+					"Stop watch task"
+				)
 				.then(k => {
 					if (k) {
 						if (k === "Yes") {
@@ -95,6 +108,14 @@ export default class DebuggerService implements Disposable {
 							baseConfig.name += " - " + baseConfig.processId;
 							AutoAttach.Cache.RunningDebugs.setValue(pid, baseConfig.name);
 							vscode.debug.startDebugging(undefined, baseConfig);
+						} else if (k === "Stop watch task") {
+							if (task) {
+								task.Terminate();
+								setTimeout(() => {
+									AutoAttach.Cache.DisconnectedDebugs.delete(pid);
+									AutoAttach.Cache.RunningDebugs.remove(pid);
+								}, 2000);
+							}
 						}
 					} else {
 						setTimeout(() => {
@@ -105,7 +126,6 @@ export default class DebuggerService implements Disposable {
 				});
 		}
 	}
-
 
 	/**
 	 * Dispose

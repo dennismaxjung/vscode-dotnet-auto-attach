@@ -7,7 +7,19 @@
  * @Last Modified time: 2018-06-15 17:41:46
  */
 
-import { Disposable, QuickPickOptions, ShellExecution, Task, TaskDefinition, TaskEndEvent, TaskExecution, tasks, Uri, window, workspace } from "vscode";
+import {
+	Disposable,
+	QuickPickOptions,
+	ShellExecution,
+	Task,
+	TaskDefinition,
+	TaskEndEvent,
+	TaskExecution,
+	tasks,
+	Uri,
+	window,
+	workspace
+} from "vscode";
 import AutoAttach from "../autoAttach";
 import AutoAttachDebugConfiguration from "../models/AutoAttachDebugConfiguration";
 import AutoAttachTask from "../models/AutoAttachTask";
@@ -61,14 +73,20 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	private static StartTask(task: Task): void {
-		if (!AutoAttach.Cache.RunningAutoAttachTasks.containsKey(AutoAttachTask.GetIdFromTask(task))) {
+		if (
+			!AutoAttach.Cache.RunningAutoAttachTasks.containsKey(
+				AutoAttachTask.GetIdFromTask(task)
+			)
+		) {
 			let tmp = tasks.executeTask(task);
 			tmp.then((k: TaskExecution) => {
 				let autoTask: AutoAttachTask = new AutoAttachTask(k);
 				AutoAttach.Cache.RunningAutoAttachTasks.setValue(autoTask.Id, autoTask);
 			});
 		} else {
-			window.showInformationMessage(".NET Watch Task already started for this project.");
+			window.showInformationMessage(
+				".NET Watch Task already started for this project."
+			);
 		}
 	}
 
@@ -82,10 +100,13 @@ export default class TaskService implements Disposable {
 	 * @returns {Task}
 	 * @memberof TaskService
 	 */
-	private static GenerateTask(config: AutoAttachDebugConfiguration, projectUri: Uri | undefined): Task {
+	private static GenerateTask(
+		config: AutoAttachDebugConfiguration,
+		projectUri: Uri | undefined
+	): Task {
 		let project = "";
 		if (projectUri) {
-			project = `--project "${projectUri.fsPath}" `;
+			project = `--project '${projectUri.fsPath}' `;
 		}
 		let command = `dotnet watch ${project}run`;
 		if (config.args) {
@@ -100,11 +121,14 @@ export default class TaskService implements Disposable {
 		}
 
 		let task: Task = new Task(
-			({ type: "" } as TaskDefinition),
+			{ type: "" } as TaskDefinition,
 			config.workspace,
 			"Watch",
 			"DotNet Auto Attach",
-			new ShellExecution(command, { env: config.env, cwd: config.workspace.uri.fsPath })
+			new ShellExecution(command, {
+				env: config.env,
+				cwd: config.workspace.uri.fsPath
+			})
 		);
 
 		return task;
@@ -118,22 +142,28 @@ export default class TaskService implements Disposable {
 	 */
 	public StartDotNetWatchTask(config: AutoAttachDebugConfiguration) {
 		workspace.findFiles("**/*.csproj").then(k => {
-			var tmp = k.filter(m => m.toString().startsWith(config.workspace.uri.toString()));
-			if (tmp.length >= 1) {
+			var tmp = k.filter(m =>
+				m.toString().startsWith(config.workspace.uri.toString())
+			);
+			if (tmp.length > 1) {
 				let quickPickOptions: QuickPickOptions = {
 					canPickMany: false,
-					placeHolder: "Select the project to launch the DotNet Watch task for.",
+					placeHolder:
+						"Select the project to launch the DotNet Watch task for.",
 					matchOnDescription: true,
 					matchOnDetail: true
 				};
-				window.showQuickPick(tmp.map((k) => new ProjectQuickPickItem(k)), quickPickOptions).then(s => {
-					if (s) {
-						TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
-					}
-				});
-
-			}
-			else {
+				window
+					.showQuickPick(
+						tmp.map(k => new ProjectQuickPickItem(k)),
+						quickPickOptions
+					)
+					.then(s => {
+						if (s) {
+							TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
+						}
+					});
+			} else {
 				TaskService.StartTask(TaskService.GenerateTask(config, tmp[0]));
 			}
 		});
@@ -148,4 +178,3 @@ export default class TaskService implements Disposable {
 		this.disposables.clear();
 	}
 }
-

@@ -11,6 +11,7 @@
 import * as vscode from "vscode";
 import DebuggerService from "./debugger-service";
 import ProcessService, { ProcessDetail } from "./process-service";
+import AutoAttach from "./rework/autoAttach";
 
 /**
  * The AutoAttachService. Provides start and stop functionality of the extension.
@@ -52,7 +53,18 @@ export default class AutoAttachService {
 							element.cml.startsWith("dotnet exec ")) &&
 						this.CheckForWorkspace(element)
 					) {
-						DebuggerService.AttachDebugger(element.pid, this.defaultConfig);
+						//DebuggerService.AttachDebugger(element.pid, this.defaultConfig);
+						const tmp = /^\"?dotnet\"? exec "(.+)"/;
+						let matches = tmp.exec(element.cml);
+						let path = "";
+						if (matches && matches.length === 2) {
+							path = matches[1];
+						}
+						AutoAttach.DebugService.AttachDotNetDebugger(
+							element.pid,
+							this.defaultConfig,
+							path
+						);
 					}
 				}
 			});

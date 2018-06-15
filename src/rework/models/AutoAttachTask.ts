@@ -7,7 +7,7 @@
  * @Last Modified time: 2018-06-15 15:21:49
  */
 
-import { Task, TaskExecution, WorkspaceFolder } from "vscode";
+import { ShellExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
 
 /**
  * The AutoAttachTask, represents a running AutoAttachTask
@@ -47,6 +47,18 @@ export default class AutoAttachTask {
 	}
 
 	/**
+	 * Gets the Project.
+	 *
+	 * @readonly
+	 * @type {string}
+	 * @memberof AutoAttachTask
+	 */
+	public get Project(): string {
+		return (this._taskExec.task.execution as ShellExecution)
+			.commandLine as string;
+	}
+
+	/**
 	 * Generates the TaskID from a task.
 	 *
 	 * @static
@@ -70,6 +82,4 @@ export default class AutoAttachTask {
 	public Terminate(): void {
 		this._taskExec.terminate();
 	}
-
-
 }
