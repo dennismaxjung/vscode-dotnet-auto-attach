@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 17:32:29
+ * @Last Modified time: 2018-06-15 17:41:46
  */
 
 import { Disposable, QuickPickOptions, ShellExecution, Task, TaskDefinition, TaskEndEvent, TaskExecution, tasks, Uri, window, workspace } from "vscode";
@@ -61,13 +61,14 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	private static StartTask(task: Task): void {
-		let tmp2 = AutoAttach.Cache.RunningAutoAttachTasks.containsKey(AutoAttachTask.GetIdFromTask(task));
-		if (!tmp2) {
+		if (!AutoAttach.Cache.RunningAutoAttachTasks.containsKey(AutoAttachTask.GetIdFromTask(task))) {
 			let tmp = tasks.executeTask(task);
 			tmp.then((k: TaskExecution) => {
 				let autoTask: AutoAttachTask = new AutoAttachTask(k);
 				AutoAttach.Cache.RunningAutoAttachTasks.setValue(autoTask.Id, autoTask);
 			});
+		} else {
+			window.showInformationMessage(".NET Watch Task already started for this project.");
 		}
 	}
 
