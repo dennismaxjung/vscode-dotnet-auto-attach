@@ -4,10 +4,10 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 16:39:38
+ * @Last Modified time: 2018-06-15 17:32:29
  */
 
-import { QuickPickOptions, ShellExecution, Task, TaskDefinition, TaskEndEvent, TaskExecution, tasks, Uri, window, workspace } from "vscode";
+import { Disposable, QuickPickOptions, ShellExecution, Task, TaskDefinition, TaskEndEvent, TaskExecution, tasks, Uri, window, workspace } from "vscode";
 import AutoAttach from "../autoAttach";
 import AutoAttachDebugConfiguration from "../models/AutoAttachDebugConfiguration";
 import AutoAttachTask from "../models/AutoAttachTask";
@@ -19,14 +19,24 @@ import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
  * @export
  * @class TaskService
  */
-export default class TaskService {
+export default class TaskService implements Disposable {
 	/**
 	 * Creates an instance of TaskService.
 	 * @memberof TaskService
 	 */
 	public constructor() {
-		tasks.onDidEndTask(TaskService.TryToRemoveEndedTask);
+		this.disposables = new Set<Disposable>();
+		this.disposables.add(tasks.onDidEndTask(TaskService.TryToRemoveEndedTask));
 	}
+	/**
+	 * A list of all disposables.
+	 *
+	 * @private
+	 * @type {Set<Disposable>}
+	 * @memberof TaskService
+	 */
+	private disposables: Set<Disposable>;
+
 	/**
 	 * Try's to remove the Task of the TaskEndEvent from cache.
 	 *
@@ -126,6 +136,15 @@ export default class TaskService {
 				TaskService.StartTask(TaskService.GenerateTask(config, tmp[0]));
 			}
 		});
+	}
+	/**
+	 * Dispose.
+	 *
+	 * @memberof TaskService
+	 */
+	public dispose() {
+		this.disposables.forEach(k => k.dispose());
+		this.disposables.clear();
 	}
 }
 

@@ -8,6 +8,9 @@ import {
 } from "vscode";
 import TerminalService from "./terminal-service";
 
+/**
+ * @deprecated Will be removed in next version.
+ */
 export default class AutoAttachDebugConfigProvider
 	implements vscode.DebugConfigurationProvider {
 	public constructor() {

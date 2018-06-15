@@ -9,6 +9,7 @@ import * as vscode from "vscode";
 /**
  * The TerminalService, provides access to the integrated terminal.
  *
+ * @deprecated Will be removed in next version.
  * @export
  * @class TerminalService
  */
@@ -19,8 +20,8 @@ export default class TerminalService {
 		vscode.tasks.onDidEndTask(k => {
 			this.openTask.delete(
 				k.execution.task.source +
-					k.execution.task.name +
-					(k.execution.task.scope as WorkspaceFolder).name
+				k.execution.task.name +
+				(k.execution.task.scope as WorkspaceFolder).name
 			);
 		});
 	}
