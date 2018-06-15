@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 19:31:58
+ * @Last Modified time: 2018-06-15 19:36:23
  */
 
 import {
@@ -85,7 +85,7 @@ export default class TaskService implements Disposable {
 			});
 		} else {
 			window.showInformationMessage(
-				".NET Watch Task already started for this project."
+				".NET Watch Task already started for the project " + task.definition.type.replace("Watch ", "")
 			);
 		}
 	}
