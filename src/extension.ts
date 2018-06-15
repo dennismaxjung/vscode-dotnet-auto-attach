@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:32:01
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-13 20:33:54
+ * @Last Modified time: 2018-06-15 15:30:15
  */
 
 "use strict";
@@ -13,6 +13,7 @@
 import * as vscode from "vscode";
 import AutoAttachDebugConfigProvider from "./autoAttach-configProvider";
 import AutoAttachService from "./autoattach-service";
+import AutoAttach from "./rework/autoAttach";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -21,10 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
 	AutoAttachService.Start();
 
 	// Register AutoAttachDeugConfigProvider
-	vscode.debug.registerDebugConfigurationProvider(
+	/*vscode.debug.registerDebugConfigurationProvider(
 		"DotNetAutoAttach",
 		new AutoAttachDebugConfigProvider()
-	);
+	);*/
+	AutoAttach.Start();
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
