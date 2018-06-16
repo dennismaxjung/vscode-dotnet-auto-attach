@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:34:31
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 14:03:34
+ * @Last Modified time: 2018-06-16 14:32:42
  */
 
 import { ProcessExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
@@ -22,9 +22,10 @@ export default class AutoAttachTask {
 		this._taskExec = taskExec;
 		this._processId = undefined;
 
-		this._projectPath = (this._taskExec.task.execution as ProcessExecution).args[2];
+		this._projectPath = (this._taskExec.task
+			.execution as ProcessExecution).args[2];
 
-		const name_regex = /^'.+(\\|\/)(.+.csproj)'/;
+		const name_regex = /^.+(\\|\/)(.+.csproj)/;
 		let matches = name_regex.exec(this._projectPath);
 		if (matches && matches.length === 3) {
 			this._project = matches[2];
