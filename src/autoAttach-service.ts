@@ -4,13 +4,13 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:32:28
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 13:22:42
+ * @Last Modified time: 2018-06-16 15:08:22
  */
 
 "use strict";
 import * as vscode from "vscode";
-import ProcessService, { ProcessDetail } from "./process-service";
 import AutoAttach from "./rework/autoAttach";
+import ProcessDetail from "./rework/models/ProcessDetail";
 
 /**
  * The AutoAttachService. Provides start and stop functionality of the extension.
@@ -45,7 +45,15 @@ export default class AutoAttachService {
 	public static Start(): void {
 		//DebuggerService.Initialize();
 		this.interval = setInterval(() => {
-			var elements = AutoAttach.ProcessService.GetProcesses();
+			var elements = new Array<ProcessDetail>();
+			AutoAttach.Cache.RunningAutoAttachTasks.forEach((k, v) => {
+				if (v && v.ProcessId) {
+					elements = elements.concat(
+						AutoAttach.ProcessService.GetProcesses(v.ProcessId.toString())
+					);
+				}
+			});
+			//var elements = AutoAttach.ProcessService.GetProcesses();
 			//ProcessService.GetProcesses(elements => {
 			for (let element of elements) {
 				if (
