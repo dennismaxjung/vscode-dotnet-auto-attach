@@ -16,6 +16,11 @@ import { ProcessExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
  * @class DotNetAutoAttachTask
  */
 export default class DotNetAutoAttachTask {
+	/**
+	 * Creates an instance of DotNetAutoAttachTask.
+	 * @param {TaskExecution} taskExec
+	 * @memberof DotNetAutoAttachTask
+	 */
 	public constructor(taskExec: TaskExecution) {
 		this._id = DotNetAutoAttachTask.GetIdFromTask(taskExec.task);
 		this._workSpace = taskExec.task.scope as WorkspaceFolder;
@@ -31,11 +36,58 @@ export default class DotNetAutoAttachTask {
 			this._project = matches[2];
 		}
 	}
+	/**
+	 * The Id
+	 *
+	 * @private
+	 * @type {string}
+	 * @memberof DotNetAutoAttachTask
+	 */
 	private _id: string;
+
+	/**
+	 * The WorkspaceFolder
+	 *
+	 * @private
+	 * @type {WorkspaceFolder}
+	 * @memberof DotNetAutoAttachTask
+	 */
 	private _workSpace: WorkspaceFolder;
+
+	/**
+	 * The ProcessId
+	 *
+	 * @private
+	 * @type {(number | undefined)}
+	 * @memberof DotNetAutoAttachTask
+	 */
 	private _processId: number | undefined;
+
+	/**
+	 * The ProjectPath
+	 *
+	 * @private
+	 * @type {string}
+	 * @memberof DotNetAutoAttachTask
+	 */
 	private _projectPath: string = "";
+
+	/**
+	 * The Project
+	 *
+	 * @private
+	 * @type {string}
+	 * @memberof DotNetAutoAttachTask
+	 */
 	private _project: string = "";
+
+	/**
+	 * The TaskExecution
+	 *
+	 * @private
+	 * @type {TaskExecution}
+	 * @memberof DotNetAutoAttachTask
+	 */
 	private _taskExec: TaskExecution;
 
 	/**

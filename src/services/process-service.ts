@@ -25,6 +25,13 @@ export default class ProcessService implements Disposable {
 	 */
 	public dispose(): void {}
 
+	/**
+	 * Gets all Processes, with ppid filter if set.
+	 *
+	 * @param {string} [ppid=""]
+	 * @returns {Array<ProcessDetail>}
+	 * @memberof ProcessService
+	 */
 	public GetProcesses(ppid: string = ""): Array<ProcessDetail> {
 		if (process.platform === "win32") {
 			return this.getProcessDetailsFromWindows(ppid);
@@ -34,6 +41,14 @@ export default class ProcessService implements Disposable {
 		}
 	}
 
+	/**
+	 * Get all ProcessDetails on windows, with ppid filter if set.
+	 *
+	 * @private
+	 * @param {string} [ppid=""]
+	 * @returns {Array<ProcessDetail>}
+	 * @memberof ProcessService
+	 */
 	private getProcessDetailsFromWindows(
 		ppid: string = ""
 	): Array<ProcessDetail> {

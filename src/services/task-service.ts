@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 14:10:28
+ * @Last Modified time: 2018-06-16 15:44:50
  */
 
 import {
@@ -194,7 +194,9 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	public dispose() {
-		this.disposables.forEach(k => k.dispose());
+		this.disposables.forEach(k => {
+			k.dispose();
+		});
 		this.disposables.clear();
 	}
 }

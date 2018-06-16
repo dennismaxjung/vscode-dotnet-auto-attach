@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 14:04:03
+ * @Last Modified time: 2018-06-16 15:44:33
  */
 
 "use strict";
@@ -136,7 +136,9 @@ export default class DebuggerService implements Disposable {
 	 * @memberof DebuggerService
 	 */
 	public dispose(): void {
-		this.disposables.forEach(k => k.dispose());
+		this.disposables.forEach(k => {
+			k.dispose();
+		});
 		this.disposables.clear();
 	}
 }
