@@ -45,21 +45,12 @@
 					"launch": {
 						"properties": {
 							"args": {
-								"anyOf": [
-									{
-										"type": "array",
-										"description": "Command line arguments passed to the program.",
-										"items": {
-											"type": "string"
-										},
-										"default": []
-									},
-									{
-										"type": "string",
-										"description": "Stringified version of command line arguments passed to the program.",
-										"default": ""
-									}
-								]
+								"type": "array",
+								"description": "Command line arguments passed to the program.",
+								"items": {
+									"type": "string"
+								},
+								"default": []
 							},
 							"env": {
 								"type": "object",

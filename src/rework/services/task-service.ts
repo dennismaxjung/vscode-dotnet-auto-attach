@@ -4,17 +4,18 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 19:36:23
+ * @Last Modified time: 2018-06-16 14:10:28
  */
 
 import {
 	Disposable,
+	ProcessExecution,
 	QuickPickOptions,
-	ShellExecution,
 	Task,
 	TaskDefinition,
 	TaskEndEvent,
 	TaskExecution,
+	TaskProcessStartEvent,
 	tasks,
 	Uri,
 	window,
@@ -39,6 +40,7 @@ export default class TaskService implements Disposable {
 	public constructor() {
 		this.disposables = new Set<Disposable>();
 		this.disposables.add(tasks.onDidEndTask(TaskService.TryToRemoveEndedTask));
+		this.disposables.add(tasks.onDidStartTaskProcess(TaskService.IsWatcherStartedSetProcessId));
 	}
 	/**
 	 * A list of all disposables.
@@ -61,6 +63,23 @@ export default class TaskService implements Disposable {
 		var taskId = AutoAttachTask.GetIdFromTask(event.execution.task);
 		if (taskId && taskId !== "") {
 			AutoAttach.Cache.RunningAutoAttachTasks.remove(taskId);
+		}
+	}
+
+	/**
+	 * Check if the started process task is a watcher task, Sets it process id.
+	 *
+	 * @private
+	 * @static
+	 * @param {TaskProcessStartEvent} event
+	 * @memberof TaskService
+	 */
+	private static IsWatcherStartedSetProcessId(event: TaskProcessStartEvent) {
+		let taskId = AutoAttachTask.GetIdFromTask(event.execution.task);
+		if (AutoAttach.Cache.RunningAutoAttachTasks.containsKey(taskId)) {
+			let task = AutoAttach.Cache.RunningAutoAttachTasks.getValue(taskId) as AutoAttachTask;
+			task.ProcessId = event.processId;
+			AutoAttach.Cache.RunningAutoAttachTasks.setValue(taskId, task);
 		}
 	}
 
@@ -102,40 +121,26 @@ export default class TaskService implements Disposable {
 	 */
 	private static GenerateTask(
 		config: AutoAttachDebugConfiguration,
-		projectUri: Uri | undefined
+		projectUri: Uri
 	): Task {
-		let project = "";
-		if (projectUri) {
-			project = `--project '${projectUri.fsPath}' `;
-		}
-		let command = `dotnet watch ${project}run`;
-		if (config.args) {
-			if (typeof config.args === "string") {
-				command += " " + (config.args as string);
-			}
-			if (Array.isArray(config.args)) {
-				(config.args as Array<string>).forEach((k: string) => {
-					command += " " + k;
-				});
-			}
-		}
 		let projectName = "";
-		if (projectUri) {
-			const name_regex = /^.+(\/|\\)(.+).csproj/;
-			let matches = name_regex.exec(projectUri.fsPath);
-			if (matches && matches.length === 3) {
-				projectName = matches[2];
-			}
+		const name_regex = /^.+(\/|\\)(.+).csproj/;
+		let matches = name_regex.exec(projectUri.fsPath);
+		if (matches && matches.length === 3) {
+			projectName = matches[2];
 		}
+
 		let task: Task = new Task(
 			{ type: "Watch " + projectName } as TaskDefinition,
 			config.workspace,
 			"Watch" + " " + projectName,
 			"DotNet Auto Attach",
-			new ShellExecution(command, {
-				env: config.env,
-				cwd: config.workspace.uri.fsPath
-			})
+			new ProcessExecution(
+				"dotnet",
+				["watch", "--project", projectUri.fsPath, "run"].concat(config.args),
+				{ cwd: config.workspace.uri.fsPath, env: config.env }
+			),
+			"$mscompile"
 		);
 
 		return task;

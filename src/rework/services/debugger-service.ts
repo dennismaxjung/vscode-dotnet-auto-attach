@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 17:32:11
+ * @Last Modified time: 2018-06-16 14:04:03
  */
 
 "use strict";
@@ -88,15 +88,15 @@ export default class DebuggerService implements Disposable {
 			AutoAttach.Cache.RunningDebugs.setValue(pid, "");
 			AutoAttach.Cache.DisconnectedDebugs.delete(pid);
 
-			let project = "";
-			const name_regex = /^dotnet watch --project '.+(\\|\/)(.+.csproj)' run/;
-			let matches = name_regex.exec(task.Project);
+			/*let project = "";
+			const name_regex = /^'.+(\\|\/)(.+.csproj)'/;
+			let matches = name_regex.exec(task.ProjectPath);
 			if (matches && matches.length === 3) {
 				project = matches[2];
-			}
+			}*/
 			vscode.window
 				.showInformationMessage(
-					`Debug disconnected. Reattach to ${project} (${pid}) ?`,
+					`Debug disconnected. Reattach to ${task.Project} (${pid}) ?`,
 					"Yes",
 					"No",
 					"Stop watch task"
