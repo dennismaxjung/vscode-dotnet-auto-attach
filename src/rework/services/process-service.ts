@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:34:03
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 20:03:23
+ * @Last Modified time: 2018-06-16 13:27:31
  */
 
 import * as child_process from "child_process";
@@ -23,9 +23,7 @@ export default class ProcessService implements Disposable {
 	 *
 	 * @memberof ProcessService
 	 */
-	public dispose(): void {
-
-	}
+	public dispose(): void {}
 
 	public GetProcesses(): Array<ProcessDetail> {
 		if (process.platform === "win32") {
@@ -40,7 +38,9 @@ export default class ProcessService implements Disposable {
 		const cmlPattern = /^(.+)\s+([0-9]+)\s+([0-9]+)$/;
 		let args = ["process", "get", "ProcessId,ParentProcessId,CommandLine"];
 
-		var tmp = child_process.execFileSync("wmic.exe", args);
+		var tmp = child_process.execFileSync("wmic.exe", args, {
+			encoding: "utf8"
+		});
 
 		var processLines = tmp
 			.split("\r\n")
@@ -60,4 +60,3 @@ export default class ProcessService implements Disposable {
 		return processDetails;
 	}
 }
-

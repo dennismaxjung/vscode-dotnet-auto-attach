@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:32:28
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 19:11:36
+ * @Last Modified time: 2018-06-16 13:22:42
  */
 
 "use strict";
@@ -45,28 +45,29 @@ export default class AutoAttachService {
 	public static Start(): void {
 		//DebuggerService.Initialize();
 		this.interval = setInterval(() => {
-			ProcessService.GetProcesses(elements => {
-				for (let element of elements) {
-					if (
-						(element.cml.startsWith('"dotnet" exec ') ||
-							element.cml.startsWith("dotnet exec ")) &&
-						this.CheckForWorkspace(element)
-					) {
-						//DebuggerService.AttachDebugger(element.pid, this.defaultConfig);
-						const tmp = /^\"?dotnet\"? exec "(.+)"/;
-						let matches = tmp.exec(element.cml);
-						let path = "";
-						if (matches && matches.length === 2) {
-							path = matches[1];
-						}
-						AutoAttach.DebugService.AttachDotNetDebugger(
-							element.pid,
-							this.defaultConfig,
-							path
-						);
+			var elements = AutoAttach.ProcessService.GetProcesses();
+			//ProcessService.GetProcesses(elements => {
+			for (let element of elements) {
+				if (
+					(element.cml.startsWith('"dotnet" exec ') ||
+						element.cml.startsWith("dotnet exec ")) &&
+					this.CheckForWorkspace(element)
+				) {
+					//DebuggerService.AttachDebugger(element.pid, this.defaultConfig);
+					const tmp = /^\"?dotnet\"? exec "(.+)"/;
+					let matches = tmp.exec(element.cml);
+					let path = "";
+					if (matches && matches.length === 2) {
+						path = matches[1];
 					}
+					AutoAttach.DebugService.AttachDotNetDebugger(
+						element.pid,
+						this.defaultConfig,
+						path
+					);
 				}
-			});
+			}
+			//});
 		}, this.pollInterval);
 	}
 
