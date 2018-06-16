@@ -9,8 +9,8 @@
 
 "use strict";
 import * as vscode from "vscode";
-import DotNetAutoAttach from "./rework/dotNetAutoAttach";
-import ProcessDetail from "./rework/models/ProcessDetail";
+import DotNetAutoAttach from "./dotNetAutoAttach";
+import ProcessDetail from "./models/ProcessDetail";
 
 /**
  * The AutoAttachService. Provides start and stop functionality of the extension.
