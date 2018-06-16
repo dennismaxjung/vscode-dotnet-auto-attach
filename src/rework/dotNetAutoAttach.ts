@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import { Disposable } from "vscode";
-import AutoAttachDebugConfigurationProvider from "./autoAttachDebugConfigurationProvider";
+import DotNetAutoAttachDebugConfigurationProvider from "./dotNetAutoAttachDebugConfigurationProvider";
 import CacheService from "./services/cache-service";
 import DebuggerService from "./services/debugger-service";
 import ProcessService from "./services/process-service";
 import TaskService from "./services/task-service";
 
-export default class AutoAttach implements Disposable {
+export default class DotNetAutoAttach implements Disposable {
 	public static readonly Cache: CacheService = new CacheService();
 	public static readonly TaskService: TaskService = new TaskService();
 	public static readonly DebugService: DebuggerService = new DebuggerService();
@@ -18,28 +18,28 @@ export default class AutoAttach implements Disposable {
 		this.disposables.add(
 			vscode.debug.registerDebugConfigurationProvider(
 				"DotNetAutoAttach",
-				new AutoAttachDebugConfigurationProvider()
+				new DotNetAutoAttachDebugConfigurationProvider()
 			)
 		);
 	}
 
-	public static Stop(): void { }
+	public static Stop(): void {}
 
 	/**
 	 * Dispose.
 	 *
-	 * @memberof AutoAttach
+	 * @memberof DotNetAutoAttach
 	 */
 	public dispose() {
-		AutoAttach.Cache.dispose();
-		AutoAttach.DebugService.dispose();
-		AutoAttach.TaskService.dispose();
-		AutoAttach.ProcessService.dispose();
+		DotNetAutoAttach.Cache.dispose();
+		DotNetAutoAttach.DebugService.dispose();
+		DotNetAutoAttach.TaskService.dispose();
+		DotNetAutoAttach.ProcessService.dispose();
 
-		AutoAttach.disposables.forEach(d => {
+		DotNetAutoAttach.disposables.forEach(d => {
 			d.dispose();
 		});
 
-		AutoAttach.disposables.clear();
+		DotNetAutoAttach.disposables.clear();
 	}
 }

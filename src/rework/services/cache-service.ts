@@ -9,7 +9,7 @@
 
 import { Dictionary } from "typescript-collections";
 import { Disposable } from "vscode";
-import AutoAttachTask from "../models/AutoAttachTask";
+import DotNetAutoAttachTask from "../models/DotNetAutoAttachTask";
 
 /**
  * The CacheService. Provides access to the central cache.
@@ -18,24 +18,26 @@ import AutoAttachTask from "../models/AutoAttachTask";
  * @class CacheService
  */
 export default class CacheService implements Disposable {
-
 	/**
 	 * Creates an instance of CacheService.
 	 * @memberof CacheService
 	 */
 	public constructor() {
-		this.RunningAutoAttachTasks = new Dictionary<string, AutoAttachTask>();
+		this.RunningAutoAttachTasks = new Dictionary<
+			string,
+			DotNetAutoAttachTask
+		>();
 		this.RunningDebugs = new Dictionary<number, string>();
 		this.DisconnectedDebugs = new Set<number>();
 	}
 
 	/**
-	 * A list of all running AutoAttachTasks.
+	 * A list of all running DotNetAutoAttachTasks.
 	 *
-	 * @type {Dictionary<string, AutoAttachTask>}
+	 * @type {Dictionary<string, DotNetAutoAttachTask>}
 	 * @memberof CacheService
 	 */
-	public RunningAutoAttachTasks: Dictionary<string, AutoAttachTask>;
+	public RunningAutoAttachTasks: Dictionary<string, DotNetAutoAttachTask>;
 
 	/**
 	 * A list of all active debugging sessions.
@@ -61,10 +63,11 @@ export default class CacheService implements Disposable {
 	 * @memberof CacheService
 	 */
 	public dispose() {
-		this.RunningAutoAttachTasks.forEach((k, v) => { v.Terminate(); });
+		this.RunningAutoAttachTasks.forEach((k, v) => {
+			v.Terminate();
+		});
 		this.RunningAutoAttachTasks.clear();
 		this.RunningDebugs.clear();
 		this.DisconnectedDebugs.clear();
 	}
-
 }

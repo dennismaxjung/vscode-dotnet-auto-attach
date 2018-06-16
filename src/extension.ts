@@ -12,7 +12,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import AutoAttachService from "./autoattach-service";
-import AutoAttach from "./rework/autoAttach";
+import AutoAttach from "./rework/dotNetAutoAttach";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed

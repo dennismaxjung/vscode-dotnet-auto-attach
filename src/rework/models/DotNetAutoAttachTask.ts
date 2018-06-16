@@ -1,5 +1,5 @@
 /*
- * @file Contains the AutoAttachTask class.
+ * @file Contains the DotNetAutoAttachTask class.
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:34:31
@@ -10,14 +10,14 @@
 import { ProcessExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
 
 /**
- * The AutoAttachTask, represents a running AutoAttachTask
+ * The DotNetAutoAttachTask, represents a running AutoAttachTask
  *
  * @export
- * @class AutoAttachTask
+ * @class DotNetAutoAttachTask
  */
-export default class AutoAttachTask {
+export default class DotNetAutoAttachTask {
 	public constructor(taskExec: TaskExecution) {
-		this._id = AutoAttachTask.GetIdFromTask(taskExec.task);
+		this._id = DotNetAutoAttachTask.GetIdFromTask(taskExec.task);
 		this._workSpace = taskExec.task.scope as WorkspaceFolder;
 		this._taskExec = taskExec;
 		this._processId = undefined;
@@ -43,7 +43,7 @@ export default class AutoAttachTask {
 	 *
 	 * @readonly
 	 * @type {string}
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public get Id(): string {
 		return this._id;
@@ -53,7 +53,7 @@ export default class AutoAttachTask {
 	 *
 	 * @readonly
 	 * @type {WorkspaceFolder}
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public get Workspace(): WorkspaceFolder {
 		return this._workSpace;
@@ -64,7 +64,7 @@ export default class AutoAttachTask {
 	 *
 	 * @readonly
 	 * @type {string}
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public get ProjectPath(): string {
 		return this._projectPath;
@@ -74,7 +74,7 @@ export default class AutoAttachTask {
 	 *
 	 * @readonly
 	 * @type {string}
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public get Project(): string {
 		return this._project;
@@ -84,7 +84,7 @@ export default class AutoAttachTask {
 	 * Gets the ProcessId.
 	 *
 	 * @type {(number | undefined)}
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public get ProcessId(): number | undefined {
 		return this._processId;
@@ -92,7 +92,7 @@ export default class AutoAttachTask {
 	/**
 	 * Sets the ProcessId.
 	 *
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public set ProcessId(num: number | undefined) {
 		this._processId = num;
@@ -103,7 +103,7 @@ export default class AutoAttachTask {
 	 * @static
 	 * @param {Task} task
 	 * @returns {string}
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public static GetIdFromTask(task: Task): string {
 		if (task.scope) {
@@ -117,7 +117,7 @@ export default class AutoAttachTask {
 	/**
 	 * Terminates the execution.
 	 *
-	 * @memberof AutoAttachTask
+	 * @memberof DotNetAutoAttachTask
 	 */
 	public Terminate(): void {
 		this._taskExec.terminate();

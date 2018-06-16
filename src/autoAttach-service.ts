@@ -9,7 +9,7 @@
 
 "use strict";
 import * as vscode from "vscode";
-import AutoAttach from "./rework/autoAttach";
+import DotNetAutoAttach from "./rework/dotNetAutoAttach";
 import ProcessDetail from "./rework/models/ProcessDetail";
 
 /**
@@ -46,10 +46,10 @@ export default class AutoAttachService {
 		//DebuggerService.Initialize();
 		this.interval = setInterval(() => {
 			var elements = new Array<ProcessDetail>();
-			AutoAttach.Cache.RunningAutoAttachTasks.forEach((k, v) => {
+			DotNetAutoAttach.Cache.RunningAutoAttachTasks.forEach((k, v) => {
 				if (v && v.ProcessId) {
 					elements = elements.concat(
-						AutoAttach.ProcessService.GetProcesses(v.ProcessId.toString())
+						DotNetAutoAttach.ProcessService.GetProcesses(v.ProcessId.toString())
 					);
 				}
 			});
@@ -68,7 +68,7 @@ export default class AutoAttachService {
 					if (matches && matches.length === 2) {
 						path = matches[1];
 					}
-					AutoAttach.DebugService.AttachDotNetDebugger(
+					DotNetAutoAttach.DebugService.AttachDotNetDebugger(
 						element.pid,
 						this.defaultConfig,
 						path

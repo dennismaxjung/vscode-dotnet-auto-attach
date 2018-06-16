@@ -1,5 +1,5 @@
 /*
- * @file Contains the AutoAttachDebugConfigurationProvider.
+ * @file Contains the DotNetAutoAttachDebugConfigurationProvider.
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:46:07
@@ -7,18 +7,24 @@
  * @Last Modified time: 2018-06-15 14:51:54
  */
 
-import { CancellationToken, DebugConfigurationProvider, ProviderResult, WorkspaceFolder } from "vscode";
-import AutoAttach from "./autoAttach";
-import IAutoAttachDebugConfiguration from "./models/AutoAttachDebugConfiguration";
+import {
+	CancellationToken,
+	DebugConfigurationProvider,
+	ProviderResult,
+	WorkspaceFolder
+} from "vscode";
+import DotNetAutoAttach from "./dotNetAutoAttach";
+import IDotNetAutoAttachDebugConfiguration from "./interfaces/IDotNetAutoAttachDebugConfiguration";
 
 /**
- * The AutoAttachDebugConfigurationProvider.
+ * The DotNetAutoAttachDebugConfigurationProvider.
  *
  * @export
- * @class AutoAttachDebugConfigurationProvider
+ * @class DotNetAutoAttachDebugConfigurationProvider
  * @implements {DebugConfigurationProvider}
  */
-export default class AutoAttachDebugConfigurationProvider implements DebugConfigurationProvider {
+export default class DotNetAutoAttachDebugConfigurationProvider
+	implements DebugConfigurationProvider {
 	/**
 	 * Resolves a [debug configuration](#DebugConfiguration) by filling in missing values or by adding/changing/removing attributes.
 	 * If more than one debug configuration provider is registered for the same type, the resolveDebugConfiguration calls are chained
@@ -32,12 +38,12 @@ export default class AutoAttachDebugConfigurationProvider implements DebugConfig
 	 */
 	public resolveDebugConfiguration(
 		folder: WorkspaceFolder | undefined,
-		debugConfiguration: IAutoAttachDebugConfiguration,
+		debugConfiguration: IDotNetAutoAttachDebugConfiguration,
 		token?: CancellationToken
-	): ProviderResult<IAutoAttachDebugConfiguration> {
+	): ProviderResult<IDotNetAutoAttachDebugConfiguration> {
 		if (folder) {
 			debugConfiguration.workspace = folder;
-			AutoAttach.TaskService.StartDotNetWatchTask(debugConfiguration);
+			DotNetAutoAttach.TaskService.StartDotNetWatchTask(debugConfiguration);
 		}
 		return undefined;
 	}

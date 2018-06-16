@@ -1,5 +1,5 @@
 /*
- * @file Contains the AutoAttachDebugConfiguration.
+ * @file Contains the DotNetAutoAttachDebugConfiguration.
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:36:43
@@ -10,15 +10,15 @@
 import { DebugConfiguration, WorkspaceFolder } from "vscode";
 
 /**
- * The AutoAttachDebugConfiguration class, extends the vscode.DebugConfiguration
+ * The DotNetAutoAttachDebugConfiguration class, extends the vscode.DebugConfiguration
  *
  * @export
- * @interface AutoAttachDebugConfiguration
+ * @interface DotNetAutoAttachDebugConfiguration
  * @extends {DebugConfiguration}
  */
-export default interface IAutoAttachDebugConfiguration extends DebugConfiguration {
+export default interface IDotNetAutoAttachDebugConfiguration
+	extends DebugConfiguration {
 	workspace: WorkspaceFolder;
 	args: Array<string>;
-	env?: { [key: string]: string; };
-
+	env?: { [key: string]: string };
 }

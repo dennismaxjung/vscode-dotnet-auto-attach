@@ -21,9 +21,9 @@ import {
 	window,
 	workspace
 } from "vscode";
-import AutoAttach from "../autoAttach";
-import AutoAttachDebugConfiguration from "../models/AutoAttachDebugConfiguration";
-import AutoAttachTask from "../models/AutoAttachTask";
+import DotNetAutoAttach from "../dotNetAutoAttach";
+import DotNetAutoAttachDebugConfiguration from "../interfaces/IDotNetAutoAttachDebugConfiguration";
+import DotNetAutoAttachTask from "../models/DotNetAutoAttachTask";
 import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
 
 /**
@@ -40,7 +40,9 @@ export default class TaskService implements Disposable {
 	public constructor() {
 		this.disposables = new Set<Disposable>();
 		this.disposables.add(tasks.onDidEndTask(TaskService.TryToRemoveEndedTask));
-		this.disposables.add(tasks.onDidStartTaskProcess(TaskService.IsWatcherStartedSetProcessId));
+		this.disposables.add(
+			tasks.onDidStartTaskProcess(TaskService.IsWatcherStartedSetProcessId)
+		);
 	}
 	/**
 	 * A list of all disposables.
@@ -60,9 +62,9 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	private static TryToRemoveEndedTask(event: TaskEndEvent) {
-		var taskId = AutoAttachTask.GetIdFromTask(event.execution.task);
+		var taskId = DotNetAutoAttachTask.GetIdFromTask(event.execution.task);
 		if (taskId && taskId !== "") {
-			AutoAttach.Cache.RunningAutoAttachTasks.remove(taskId);
+			DotNetAutoAttach.Cache.RunningAutoAttachTasks.remove(taskId);
 		}
 	}
 
@@ -75,11 +77,13 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	private static IsWatcherStartedSetProcessId(event: TaskProcessStartEvent) {
-		let taskId = AutoAttachTask.GetIdFromTask(event.execution.task);
-		if (AutoAttach.Cache.RunningAutoAttachTasks.containsKey(taskId)) {
-			let task = AutoAttach.Cache.RunningAutoAttachTasks.getValue(taskId) as AutoAttachTask;
+		let taskId = DotNetAutoAttachTask.GetIdFromTask(event.execution.task);
+		if (DotNetAutoAttach.Cache.RunningAutoAttachTasks.containsKey(taskId)) {
+			let task = DotNetAutoAttach.Cache.RunningAutoAttachTasks.getValue(
+				taskId
+			) as DotNetAutoAttachTask;
 			task.ProcessId = event.processId;
-			AutoAttach.Cache.RunningAutoAttachTasks.setValue(taskId, task);
+			DotNetAutoAttach.Cache.RunningAutoAttachTasks.setValue(taskId, task);
 		}
 	}
 
@@ -93,18 +97,22 @@ export default class TaskService implements Disposable {
 	 */
 	private static StartTask(task: Task): void {
 		if (
-			!AutoAttach.Cache.RunningAutoAttachTasks.containsKey(
-				AutoAttachTask.GetIdFromTask(task)
+			!DotNetAutoAttach.Cache.RunningAutoAttachTasks.containsKey(
+				DotNetAutoAttachTask.GetIdFromTask(task)
 			)
 		) {
 			let tmp = tasks.executeTask(task);
 			tmp.then((k: TaskExecution) => {
-				let autoTask: AutoAttachTask = new AutoAttachTask(k);
-				AutoAttach.Cache.RunningAutoAttachTasks.setValue(autoTask.Id, autoTask);
+				let autoTask: DotNetAutoAttachTask = new DotNetAutoAttachTask(k);
+				DotNetAutoAttach.Cache.RunningAutoAttachTasks.setValue(
+					autoTask.Id,
+					autoTask
+				);
 			});
 		} else {
 			window.showInformationMessage(
-				".NET Watch Task already started for the project " + task.definition.type.replace("Watch ", "")
+				".NET Watch Task already started for the project " +
+					task.definition.type.replace("Watch ", "")
 			);
 		}
 	}
@@ -114,13 +122,13 @@ export default class TaskService implements Disposable {
 	 *
 	 * @private
 	 * @static
-	 * @param {AutoAttachDebugConfiguration} config
+	 * @param {DotNetAutoAttachDebugConfiguration} config
 	 * @param {string} [project=""]
 	 * @returns {Task}
 	 * @memberof TaskService
 	 */
 	private static GenerateTask(
-		config: AutoAttachDebugConfiguration,
+		config: DotNetAutoAttachDebugConfiguration,
 		projectUri: Uri
 	): Task {
 		let projectName = "";
@@ -149,10 +157,10 @@ export default class TaskService implements Disposable {
 	/**
 	 * Start a new DotNet Watch Task
 	 *
-	 * @param {AutoAttachDebugConfiguration} config
+	 * @param {DotNetAutoAttachDebugConfiguration} config
 	 * @memberof TaskService
 	 */
-	public StartDotNetWatchTask(config: AutoAttachDebugConfiguration) {
+	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
 		workspace.findFiles("**/*.csproj").then(k => {
 			var tmp = k.filter(m =>
 				m.toString().startsWith(config.workspace.uri.toString())
