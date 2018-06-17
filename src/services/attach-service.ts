@@ -72,7 +72,7 @@ export default class AttachService implements Disposable {
 	private timer: NodeJS.Timer | undefined;
 
 	/**
-	 * Start the timer to scan for attach
+	 * Start the timer to scan for attach.
 	 *
 	 * @memberof AttachService
 	 */
@@ -80,6 +80,11 @@ export default class AttachService implements Disposable {
 		this.timer = setInterval(this.ScanToAttach, AttachService.interval);
 	}
 
+	/**
+	 * Stop the timer to scan for attach.
+	 *
+	 * @memberof AttachService
+	 */
 	public StopTimer(): void {
 		if (this.timer) {
 			clearInterval(this.timer);
