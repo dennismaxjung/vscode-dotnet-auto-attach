@@ -1,7 +1,7 @@
 {
 	"name": "vscode-dotnet-auto-attach",
 	"displayName": "DotNet Auto Attach",
-	"description": "Automatically attach to dotnet process",
+	"description": "Automatically attach to a dotnet process started with dotnet-watch or manual.",
 	"version": "0.0.1",
 	"publisher": "dennismaxjung",
 	"engines": {
