@@ -32,6 +32,7 @@
 	},
 	"activationEvents": [
 		"onDebug",
+		"onLanguage:csharp",
 		"*"
 	],
 	"main": "./out/extension",
