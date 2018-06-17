@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 12:30:24
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 17:08:03
+ * @Last Modified time: 2018-06-16 19:02:45
  */
 
 import { Dictionary } from "typescript-collections";
@@ -26,7 +26,7 @@ export default class CacheService implements Disposable {
 		this.RunningAutoAttachTasks = new Dictionary<
 			string,
 			DotNetAutoAttachTask
-		>();
+			>();
 		this.RunningDebugs = new Dictionary<number, string>();
 		this.DisconnectedDebugs = new Set<number>();
 	}
@@ -45,7 +45,7 @@ export default class CacheService implements Disposable {
 	 * @private
 	 * @static
 	 * @type {Dictionary<number, string>}
-	 * @memberof DebuggerService
+	 * @memberof CacheService
 	 */
 	public RunningDebugs: Dictionary<number, string>;
 

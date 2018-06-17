@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 15:44:33
+ * @Last Modified time: 2018-06-16 19:07:21
  */
 
 "use strict";
@@ -36,7 +36,7 @@ export default class DebuggerService implements Disposable {
 	 *
 	 * @private
 	 * @type {Set<Disposable>}
-	 * @memberof TaskService
+	 * @memberof DebuggerService
 	 */
 	private disposables: Set<Disposable>;
 

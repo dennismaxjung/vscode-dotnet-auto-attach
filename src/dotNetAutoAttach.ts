@@ -4,12 +4,13 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-16 15:41:58
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 15:43:02
+ * @Last Modified time: 2018-06-17 11:32:49
  */
 
 import * as vscode from "vscode";
 import { Disposable } from "vscode";
 import DotNetAutoAttachDebugConfigurationProvider from "./dotNetAutoAttachDebugConfigurationProvider";
+import AttachService from "./services/attach-service";
 import CacheService from "./services/cache-service";
 import DebuggerService from "./services/debugger-service";
 import ProcessService from "./services/process-service";
@@ -27,6 +28,7 @@ export default class DotNetAutoAttach implements Disposable {
 	public static readonly TaskService: TaskService = new TaskService();
 	public static readonly DebugService: DebuggerService = new DebuggerService();
 	public static readonly ProcessService: ProcessService = new ProcessService();
+	public static readonly AttachService: AttachService = new AttachService();
 	private static disposables: Set<Disposable> = new Set<Disposable>();
 
 	/**
@@ -43,6 +45,7 @@ export default class DotNetAutoAttach implements Disposable {
 				new DotNetAutoAttachDebugConfigurationProvider()
 			)
 		);
+		this.AttachService.StartTimer();
 	}
 
 	/**
@@ -51,7 +54,19 @@ export default class DotNetAutoAttach implements Disposable {
 	 * @static
 	 * @memberof DotNetAutoAttach
 	 */
-	public static Stop(): void {}
+	public static Stop(): void {
+
+		this.AttachService.StopTimer();
+
+		DotNetAutoAttach.disposables.forEach(d => {
+			d.dispose();
+		});
+
+		DotNetAutoAttach.disposables.clear();
+
+		DotNetAutoAttach.Cache.dispose();
+		DotNetAutoAttach.DebugService.dispose();
+	}
 
 	/**
 	 * Dispose.
@@ -63,6 +78,7 @@ export default class DotNetAutoAttach implements Disposable {
 		DotNetAutoAttach.DebugService.dispose();
 		DotNetAutoAttach.TaskService.dispose();
 		DotNetAutoAttach.ProcessService.dispose();
+		DotNetAutoAttach.AttachService.dispose();
 
 		DotNetAutoAttach.disposables.forEach(d => {
 			d.dispose();

@@ -31,7 +31,6 @@
 		"url": "https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/issues"
 	},
 	"activationEvents": [
-		"onCommand:extension.sayHello",
 		"onDebug",
 		"*"
 	],
@@ -78,12 +77,6 @@
 						}
 					}
 				]
-			}
-		],
-		"commands": [
-			{
-				"command": "extension.sayHello",
-				"title": "Hello World"
 			}
 		]
 	},
