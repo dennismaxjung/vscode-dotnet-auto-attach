@@ -20,7 +20,6 @@ import ProcessDetail from "../models/ProcessDetail";
  * @class AttachService
  */
 export default class AttachService implements Disposable {
-
 	/**
 	 * Creates an instance of AttachService.
 	 * @memberof AttachService
@@ -102,14 +101,11 @@ export default class AttachService implements Disposable {
 				);
 			}
 		});
-
 		processesToScan.forEach(p => {
 			if (
-				(
-					p.cml.startsWith('"dotnet" exec ') ||
-					p.cml.startsWith("dotnet exec ")
-				) &&
-				this.CheckForWorkspace(p)
+				(p.cml.startsWith('"dotnet" exec ') ||
+					p.cml.startsWith("dotnet exec ")) &&
+				DotNetAutoAttach.AttachService.CheckForWorkspace(p)
 			) {
 				const tmp = /^\"?dotnet\"? exec "(.+)"/;
 				let matches = tmp.exec(p.cml);
@@ -152,15 +148,15 @@ export default class AttachService implements Disposable {
 		return false;
 	}
 
-
 	/**
 	 * Dispose.
 	 *
 	 * @memberof AttachService
 	 */
 	public dispose(): void {
-		this.disposables.forEach(k => { k.dispose(); });
+		this.disposables.forEach(k => {
+			k.dispose();
+		});
 		this.StopTimer();
 	}
-
 }
