@@ -99,7 +99,8 @@ export default class AttachService implements Disposable {
 	 */
 	private ScanToAttach(): void {
 		var processesToScan = new Array<ProcessDetail>();
-		DotNetAutoAttach.Cache.RunningAutoAttachTasks.forEach((k, v) => {
+		var runningTasks = DotNetAutoAttach.Cache.RunningAutoAttachTasks;
+		runningTasks.forEach((k, v) => {
 			if (v && v.ProcessId) {
 				processesToScan = processesToScan.concat(
 					DotNetAutoAttach.ProcessService.GetProcesses(v.ProcessId.toString())
@@ -112,8 +113,8 @@ export default class AttachService implements Disposable {
 					p.cml.startsWith("dotnet exec ")) &&
 				DotNetAutoAttach.AttachService.CheckForWorkspace(p)
 			) {
-				const tmp = /^\"?dotnet\"? exec "(.+)"/;
-				let matches = tmp.exec(p.cml);
+				const pathRgx = /^\"?dotnet\"? exec \"?(.+)\"?/;
+				let matches = pathRgx.exec(p.cml);
 				let path = "";
 				if (matches && matches.length === 2) {
 					path = matches[1];
