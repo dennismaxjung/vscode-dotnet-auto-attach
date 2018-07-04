@@ -23,7 +23,7 @@ export default class ProcessService implements Disposable {
 	 *
 	 * @memberof ProcessService
 	 */
-	public dispose(): void {}
+	public dispose(): void { }
 
 	/**
 	 * Gets all Processes, with ppid filter if set.
@@ -35,10 +35,57 @@ export default class ProcessService implements Disposable {
 	public GetProcesses(ppid: string = ""): Array<ProcessDetail> {
 		if (process.platform === "win32") {
 			return this.getProcessDetailsFromWindows(ppid);
-		} else {
-			//TODO: Add Linux & MAC
-			return new Array<ProcessDetail>();
+		} else { // unix
+			return this.getProcessDetailsFromUnix(ppid);
 		}
+	}
+	/**
+	 * Get all ProcessDetails on unix, with ppid filter if set.
+	 *
+	 * @private
+	 * @param {string} [ppid=""]
+	 * @returns {Array<ProcessDetail>}
+	 * @memberof ProcessService
+	 */
+	private getProcessDetailsFromUnix(
+		ppid: string = ""
+	): Array<ProcessDetail> {
+		const cmlPattern = /^([0-9]+)\s+([0-9]+)\s(.+$)/;
+
+		// build and execute command line tool "ps" to get details of all running processes
+		let args = ["-o pid, ppid, command"];
+		var tmp = child_process.execFileSync("ps", args, {
+			encoding: "utf8"
+		});
+
+		// split process informations results for each process
+		var processLines = tmp
+			.split("\n")
+			.map(str => {
+				return str.trim();
+			})
+			.filter(str => cmlPattern.test(str));
+
+		// parse output to a ProcessDetail list
+		var processDetails = new Array<ProcessDetail>();
+		processLines.forEach(str => {
+			let s = cmlPattern.exec(str);
+			if (s && s.length === 4 && // validate regex result
+				(ppid === "" || s[2] === ppid)) { // apply parent process filter
+				processDetails.push(new ProcessDetail(s[1], s[2], s[3]));
+			}
+		});
+
+		//Find nested child processes
+		if (processDetails.length !== 0 && ppid !== "") {
+			let childs = new Array<ProcessDetail>();
+			processDetails.forEach(k => {
+				let tmp = this.getProcessDetailsFromUnix(k.pid.toString());
+				tmp.forEach(l => childs.push(l));
+			});
+			return processDetails.concat(childs);
+		}
+		return processDetails;
 	}
 
 	/**
