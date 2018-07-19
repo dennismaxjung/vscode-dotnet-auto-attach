@@ -1,6 +1,6 @@
-# vscode-dotnet-auto-attach README
+# VS Code - DotNet Auto Atach
 
-This is the README for your extension "vscode-dotnet-auto-attach". After writing up a brief description, we recommend including the following sections.
+The "DotNet Auto Attach" extension automatically attaches the debugger to dotnet programs launched from the integrated terminal. Besides this it provides a debugger for working with dotnet-watch.
 
 ## Features
 
@@ -14,7 +14,15 @@ For example if there is an image subfolder under your extension project workspac
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+* [C#](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) - C# for Visual Studio Code (powered by OmniSharp).
+
+## Getting Started
+1. [Install the extension](https://marketplace.visualstudio.com/items?itemName=dennismaxjung.dotnet-auto-attach)
+2. Restart VS Code and open the folder containing the project you want to work on.
+
+## Using the debugger
+
+When your launch config is set up, you can debug your project. Pick a launch config from the dropdown on the Debug pane in Code. Press the play button or F5 to start.
 
 ## Extension Settings
 
@@ -47,19 +55,34 @@ Fixed issue #.
 
 Added features X, Y, and Z.
 
------------------------------------------------------------------------------------------------------------
+## Built With
 
-## Working with Markdown
+* [typescript-collections](https://www.npmjs.com/package/typescript-collections) - It is a complete, fully tested data structure library written in TypeScript.
 
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
+## Contributing
 
-### For more information
+Please read [CONTRIBUTING.md](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+## Versioning
 
-**Enjoy!**
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/tags). 
+
+## Authors
+
+* **Dennis Jung** - *Initial work* - [dennismaxjung](https://gitlab.com/dennismaxjung) [dennismaxjung](https://github.com/dennismaxjung)
+* **Konrad Müller** - *Initial work* - [krdmllr](https://gitlab.com/krdmllr) [krdmllr](https://github.com/krdmllr)
+
+See also the list of [contributors](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/graphs/master) who participated in this project.
+Or the list of [members](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/project_members).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
+
+## Acknowledgments
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
+
