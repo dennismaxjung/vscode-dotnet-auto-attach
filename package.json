@@ -1,8 +1,8 @@
 {
 	"name": "vscode-dotnet-auto-attach",
-	"displayName": "DotNet Auto Attach",
+	"displayName": ".NET Auto Attach",
 	"description": "Automatically attach to a dotnet process started with dotnet-watch or manual.",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"publisher": "dennismaxjung",
 	"engines": {
 		"vscode": "^1.24.0"
@@ -14,6 +14,7 @@
 		"Debuggers",
 		"Programming Languages"
 	],
+	"icon": "images/icon.png",
 	"contributors": [
 		{
 			"name": "Dennis Jung"
@@ -25,11 +26,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach.git"
+		"url": "https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach"
 	},
 	"bugs": {
 		"url": "https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/issues"
 	},
+	"homepage": "https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach",
 	"activationEvents": [
 		"onDebug",
 		"onLanguage:csharp",
@@ -40,7 +42,7 @@
 		"debuggers": [
 			{
 				"type": "DotNetAutoAttach",
-				"label": "DotNet Auto Attach",
+				"label": ".NET Auto Attach",
 				"configurationAttributes": {
 					"launch": {
 						"properties": {
@@ -65,8 +67,8 @@
 				},
 				"configurationSnippets": [
 					{
-						"label": ".NET: Auto Attach Debug (watch)",
-						"description": "A new configuration for launching DotNet Auto Attach",
+						"label": ".NET: Auto Attach Debug (dotnet-watch)",
+						"description": "A new configuration for launching .NET Auto Attach",
 						"body": {
 							"type": "DotNetAutoAttach",
 							"request": "launch",
