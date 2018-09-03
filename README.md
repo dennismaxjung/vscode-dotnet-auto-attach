@@ -1,6 +1,8 @@
 # VS Code - DotNet Auto Atach
 
-The "DotNet Auto Attach" extension automatically attaches the debugger to dotnet programs launched from the integrated terminal. Besides this it provides a debugger for working with dotnet-watch.
+The "DotNet Auto Attach" extension is created to enable a seemless debugging experience when working with dotnet-watch. While dotnet-watch will rebuild and launch your application everytime you change and store a file, you have to manually restart the debugger each time.
+
+This is where "DotNet Auto Attach" comes in and shines. After dotnet-watch restarts your application, it will attach the debugger to enable a seemless debugging experience while changing files on the fly.
 
 ## Features
 
