@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:32:01
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-17 11:38:01
+ * @Last Modified time: 2018-09-03 11:45:37
  */
 
 "use strict";
@@ -13,14 +13,22 @@
 import * as vscode from "vscode";
 import DotNetAutoAttach from "./dotNetAutoAttach";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+/**
+ * This method is called when your extension is activated.
+ * Your extension is activated the very first time the command is executed.
+ *
+ * @export
+ * @param {vscode.ExtensionContext} context
+ */
 export function activate(context: vscode.ExtensionContext) {
-
 	DotNetAutoAttach.Start();
 }
 
-// this method is called when your extension is deactivated
+/**
+ * This method is called when your extension is deactivated.
+ *
+ * @export
+ */
 export function deactivate() {
 	DotNetAutoAttach.Stop();
 }
