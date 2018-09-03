@@ -5,5 +5,8 @@ out/**/*.map
 src/**
 .gitignore
 tsconfig.json
+package-lock.json
+.editorconfig
 vsc-extension-quickstart.md
 tslint.json
+.gitattributes
