@@ -1,8 +1,17 @@
-# VS Code - .NET Auto Attach
+<h1 align="center">
+  <br>
+    <img src="images/icon.png" alt="logo" width="200">
+  <br>
+	VS Code - .NET Auto Attach
+  <br>
+  <br>
+</h1>
+<h4 align="center">Enables a seamless debugging experience when working with dotnet-watch.</h4>
 
-The ".NET Auto Attach" extension is created to enable a seemless debugging experience when working with dotnet-watch. While dotnet-watch will rebuild and launch your application everytime you change and store a file, you have to manually restart the debugger each time.
+The ".NET Auto Attach" extension is created to enable a seamless debugging experience when working with dotnet-watch.
+While dotnet-watch will rebuild and launch your application every time you change and store a file, you have to manually restart the debugger each time.
 
-This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restarts your application, it will attach the debugger to enable a seemless debugging experience while changing files on the fly.
+This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restarts your application, it will attach the debugger to enable a seamless debugging experience while changing files on the fly.
 
 ## Features
 
@@ -25,7 +34,7 @@ For example if there is an image subfolder under your extension project workspac
 
 ## Using the debugger
 
-When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you can debug your project. Pick a the launch config from the dropdown on the Debug pane in Code. Press the play button or F5 to start.
+When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you can debug your project. Pick the launch config from the dropdown on the Debug pane in Code. Press the play button or F5 to start.
 
 ### Configuration
 
