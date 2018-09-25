@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-16 15:41:58
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-17 11:32:49
+ * @Last Modified time: 2018-09-03 11:48:08
  */
 
 import * as vscode from "vscode";
@@ -24,11 +24,59 @@ import TaskService from "./services/task-service";
  * @implements {Disposable}
  */
 export default class DotNetAutoAttach implements Disposable {
+	/**
+	 * The CacheService. Provides access to the central cache.
+	 *
+	 * @static
+	 * @type {CacheService}
+	 * @memberof DotNetAutoAttach
+	 */
+
 	public static readonly Cache: CacheService = new CacheService();
+	/**
+	 * The TaskService, provides functions to manage tasks.
+	 *
+	 * @static
+	 * @type {TaskService}
+	 * @memberof DotNetAutoAttach
+	 */
 	public static readonly TaskService: TaskService = new TaskService();
+
+	/**
+	 * The DebuggerService. Provide functionality for starting, and manageing debug sessions.
+	 *
+	 * @static
+	 * @type {DebuggerService}
+	 * @memberof DotNetAutoAttach
+	 */
 	public static readonly DebugService: DebuggerService = new DebuggerService();
+
+	/**
+	 * The ProcessService. Provides functionality to scan and parse processes running.
+	 *
+	 * @static
+	 * @type {ProcessService}
+	 * @memberof DotNetAutoAttach
+	 */
 	public static readonly ProcessService: ProcessService = new ProcessService();
+
+	/**
+	 * The AttachService.
+	 *
+	 * @static
+	 * @type {AttachService}
+	 * @memberof DotNetAutoAttach
+	 */
 	public static readonly AttachService: AttachService = new AttachService();
+
+	/**
+	 * A list of all disposables.
+	 *
+	 * @private
+	 * @static
+	 * @type {Set<Disposable>}
+	 * @memberof DotNetAutoAttach
+	 */
 	private static disposables: Set<Disposable> = new Set<Disposable>();
 
 	/**
@@ -55,7 +103,6 @@ export default class DotNetAutoAttach implements Disposable {
 	 * @memberof DotNetAutoAttach
 	 */
 	public static Stop(): void {
-
 		this.AttachService.StopTimer();
 
 		DotNetAutoAttach.disposables.forEach(d => {

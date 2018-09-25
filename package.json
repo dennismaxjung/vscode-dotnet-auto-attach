@@ -1,11 +1,11 @@
 {
 	"name": "vscode-dotnet-auto-attach",
-	"displayName": ".NET Auto Attach",
-	"description": "Automatically attach to a dotnet process started with dotnet-watch or manual.",
-	"version": "1.0.0",
+	"displayName": "DotNet Auto Attach",
+	"description": "Automatically attach the debugger to a dotnet process started with dotnet-watch.",
+	"version": "0.0.1",
 	"publisher": "dennismaxjung",
 	"engines": {
-		"vscode": "^1.24.0"
+		"vscode": "^1.26.1"
 	},
 	"extensionDependencies": [
 		"ms-vscode.csharp"
@@ -96,9 +96,9 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^2.2.42",
-		"@types/node": "^7.0.43",
-		"tslint": "^5.8.0",
-		"typescript": "^2.6.1",
-		"vscode": "^1.1.6"
+		"@types/node": "^7.0.70",
+		"tslint": "^5.11.0",
+		"typescript": "^2.9.2",
+		"vscode": "^1.1.21"
 	}
 }
