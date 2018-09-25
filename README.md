@@ -1,65 +1,81 @@
-# vscode-dotnet-auto-attach README
+<h1 align="center">
+  <br>
+    <img src="images/icon.png" alt="logo" width="200">
+  <br>
+	VS Code - .NET Auto Attach
+  <br>
+  <br>
+</h1>
+<h4 align="center">Enables a seamless debugging experience when working with dotnet-watch.</h4>
 
-This is the README for your extension "vscode-dotnet-auto-attach". After writing up a brief description, we recommend including the following sections.
+The ".NET Auto Attach" extension is created to enable a seamless debugging experience when working with dotnet-watch.
+While dotnet-watch will rebuild and launch your application every time you change and store a file, you have to manually restart the debugger each time.
+
+This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restarts your application, it will attach the debugger to enable a seamless debugging experience while changing files on the fly.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Attach debugger if dotnet-watch reloads
 
-For example if there is an image subfolder under your extension project workspace:
+<p align="center">
+<img src="images/watch-reload.gif" alt="Reload and Attach" width="550"><br/>
+</p>
 
-\!\[feature X\]\(images/feature-x.png\)
+### Solutions and Workspaces with multiple projects
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+<p align="center">
+<img src="images/multi-project.png" alt="Multiproject Support" width="550"><br/>
+</p>
+
+### Disconnection detection
+
+<p align="center">
+<img src="images/disconnect.png" alt="Disconnect detected" width="550"><br/>
+</p>
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- [C#](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) - C# for Visual Studio Code (powered by OmniSharp).
 
-## Extension Settings
+## Getting Started
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. [Install the extension](https://marketplace.visualstudio.com/items?itemName=dennismaxjung.vscode-dotnet-auto-attach)
+2. Restart VS Code and open the folder containing the project you want to work on.
 
-For example:
+## Using the debugger
 
-This extension contributes the following settings:
+When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you can debug your project. Pick the launch config from the dropdown on the Debug pane in Code. Press the play button or F5 to start.
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+### Configuration
 
-## Known Issues
+The extension operates currently only in one mode - it can launch your project you want to debug with dotnet-watch.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Just like when using the normal C# debugger, you configure the mode with a .vscode/launch.json file in the root directory of your project. You can create this file manually, or Code will create one for you if you try to run your project, and it doesn't exist yet.
 
-## Release Notes
+## Release Notes & Known Issues
 
-Users appreciate release notes as you update your extension.
+See the [CHANGELOG.md](CHANGELOG.md) for the details of changes for each version and known issues.
 
-### 1.0.0
+## Built With
 
-Initial release of ...
+- [typescript-collections](https://www.npmjs.com/package/typescript-collections) - It is a complete, fully tested data structure library written in TypeScript.
 
-### 1.0.1
+## Contributing
 
-Fixed issue #.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-### 1.1.0
+## Versioning
 
-Added features X, Y, and Z.
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/tags).
 
------------------------------------------------------------------------------------------------------------
+## Authors
 
-## Working with Markdown
+- **Dennis Jung** - _Initial work_ - [dennismaxjung](https://gitlab.com/dennismaxjung) [dennismaxjung](https://github.com/dennismaxjung)
+- **Konrad Müller** - _Initial work_ - [krdmllr](https://github.com/krdmllr)
 
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+See also the list of [contributors](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/graphs/master) who participated in this project.
+Or the list of [members](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/project_members).
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
+## License
 
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.
