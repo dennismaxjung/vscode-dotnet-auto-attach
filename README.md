@@ -65,7 +65,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Authors
 
 - **Dennis Jung** - _Initial work_ - [dennismaxjung](https://gitlab.com/dennismaxjung) [dennismaxjung](https://github.com/dennismaxjung)
-- **Konrad Müller** - _Initial work_ - [krdmllr](https://gitlab.com/krdmllr) [krdmllr](https://github.com/krdmllr)
+- **Konrad Müller** - _Initial work_ - [krdmllr](https://github.com/krdmllr)
 
 See also the list of [contributors](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/graphs/master) who participated in this project.
 Or the list of [members](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/project_members).
