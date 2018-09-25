@@ -17,15 +17,21 @@ This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restart
 
 ### Attach debugger if dotnet-watch reloads
 
-![Reload and Attach](images/watch-reload.gif)<br/>
+<p align="center">
+<img src="images/watch-reload.gif" alt="Reload and Attach" width="550"><br/>
+</p>
 
 ### Solutions and Workspaces with multiple projects
 
-![Multiproject Support](images/multi-project.png)<br/>
+<p align="center">
+<img src="images/multi-project.png" alt="Multiproject Support" width="550"><br/>
+</p>
 
 ### Disconnection detection
 
-![Disconnect detected](images/disconnect.png)<br/>
+<p align="center">
+<img src="images/disconnect.png" alt="Disconnect detected" width="550"><br/>
+</p>
 
 ## Requirements
 
