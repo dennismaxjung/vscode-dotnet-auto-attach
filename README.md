@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-    <img src="images/icon.png" alt="logo" width="200">
+    <img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/icon.png" alt="logo" width="200">
   <br>
 	VS Code - .NET Auto Attach
   <br>
@@ -18,19 +18,19 @@ This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restart
 ### Attach debugger if dotnet-watch reloads
 
 <p align="center">
-<img src="images/watch-reload.gif" alt="Reload and Attach" width="550"><br/>
+<img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/watch-reload.gif" alt="Reload and Attach" width="550"><br/>
 </p>
 
 ### Solutions and Workspaces with multiple projects
 
 <p align="center">
-<img src="images/multi-project.png" alt="Multiproject Support" width="550"><br/>
+<img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/multi-project.png" alt="Multiproject Support" width="550"><br/>
 </p>
 
 ### Disconnection detection
 
 <p align="center">
-<img src="images/disconnect.png" alt="Disconnect detected" width="550"><br/>
+<img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/disconnect.png" alt="Disconnect detected" width="550"><br/>
 </p>
 
 ## Requirements
