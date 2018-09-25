@@ -23,10 +23,6 @@ Calling out known issues can help limit users opening duplicate issues against y
 
 ### Security
 
-## [1.0.0] - 2018-09-XX
+## [1.0.0] - 2018-09-25
 
 - Initial release
-
-### Added
-
--
