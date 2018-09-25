@@ -15,13 +15,17 @@ This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restart
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Attach debugger if dotnet-watch reloads
 
-For example if there is an image subfolder under your extension project workspace:
+![Reload and Attach](images/watch-reload.gif)<br/>
 
-\!\[feature X\]\(images/feature-x.png\)
+### Solutions and Workspaces with multiple projects
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![Multiproject Support](images/multi-project.png)<br/>
+
+### Disconnection detection
+
+![Disconnect detected](images/disconnect.png)<br/>
 
 ## Requirements
 
@@ -41,17 +45,6 @@ When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you 
 The extension operates currently only in one mode - it can launch your project you want to debug with dotnet-watch.
 
 Just like when using the normal C# debugger, you configure the mode with a .vscode/launch.json file in the root directory of your project. You can create this file manually, or Code will create one for you if you try to run your project, and it doesn't exist yet.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-- `myExtension.enable`: enable/disable this extension
-- `myExtension.thing`: set to `blah` to do something
 
 ## Release Notes & Known Issues
 
@@ -79,10 +72,4 @@ Or the list of [members](https://gitlab.com/dennismaxjung/vscode-dotnet-auto-att
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.
