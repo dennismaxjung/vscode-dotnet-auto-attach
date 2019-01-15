@@ -15,8 +15,7 @@
 		"Programming Languages"
 	],
 	"icon": "images/icon.png",
-	"contributors": [
-		{
+	"contributors": [{
 			"name": "Dennis Jung"
 		},
 		{
@@ -39,49 +38,54 @@
 	],
 	"main": "./out/extension",
 	"contributes": {
-		"debuggers": [
-			{
-				"type": "DotNetAutoAttach",
-				"label": ".NET Auto Attach",
-				"configurationAttributes": {
-					"launch": {
-						"properties": {
-							"args": {
-								"type": "array",
-								"description": "Command line arguments passed to the program.",
-								"items": {
-									"type": "string"
-								},
-								"default": []
+		"debuggers": [{
+			"type": "DotNetAutoAttach",
+			"label": ".NET Auto Attach",
+			"configurationAttributes": {
+				"launch": {
+					"properties": {
+						"args": {
+							"type": "array",
+							"description": "Command line arguments passed to the program.",
+							"items": {
+								"type": "string"
 							},
-							"env": {
-								"type": "object",
-								"additionalProperties": {
-									"type": "string"
-								},
-								"description": "Environment variables passed to the program.",
-								"default": {}
-							}
+							"default": []
+						},
+						"env": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							},
+							"description": "Environment variables passed to the program.",
+							"default": {}
 						}
 					}
-				},
-				"configurationSnippets": [
-					{
-						"label": ".NET: Auto Attach Debug (dotnet-watch)",
-						"description": "A new configuration for launching .NET Auto Attach",
-						"body": {
-							"type": "DotNetAutoAttach",
-							"request": "launch",
-							"name": ".NET Core Watch",
-							"args": [],
-							"env": {
-								"ASPNETCORE_ENVIRONMENT": "Development"
-							}
-						}
+				}
+			},
+			"initialConfigurations": [{
+				"type": "DotNetAutoAttach",
+				"request": "launch",
+				"name": ".NET Core Watch",
+				"args": [],
+				"env": {
+					"ASPNETCORE_ENVIRONMENT": "Development"
+				}
+			}],
+			"configurationSnippets": [{
+				"label": ".NET: Auto Attach Debug (dotnet-watch)",
+				"description": "A new configuration for launching .NET Auto Attach",
+				"body": {
+					"type": "DotNetAutoAttach",
+					"request": "launch",
+					"name": ".NET Core Watch",
+					"args": [],
+					"env": {
+						"ASPNETCORE_ENVIRONMENT": "Development"
 					}
-				]
-			}
-		]
+				}
+			}]
+		}]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
