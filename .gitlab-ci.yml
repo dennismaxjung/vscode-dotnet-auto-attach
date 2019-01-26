@@ -16,9 +16,9 @@ build_package:
       paths:
       - node_modules/
     script:
-      - sudo npm install -g vsce
-      - sudo npm install
-      - sudo vsce package --baseContentUrl '$BASE_CONTENT_URL'
+      - npm install --unsafe-perm -g vsce
+      - npm install --unsafe-perm
+      - vsce package --baseContentUrl '$BASE_CONTENT_URL'
     artifacts:
       paths:
         - "*.vsix"
