@@ -18,7 +18,7 @@ build_package:
     script:
       - npm install --unsafe-perm -g vsce
       - npm install --unsafe-perm
-      - vsce package -o '$CI_PROJECT_NAME-$CI_JOB_ID-$CI_PIPELINE_SOURCE.vsix' --baseContentUrl '$BASE_CONTENT_URL'
+      - vsce package -o $CI_PROJECT_NAME-$CI_JOB_ID-$CI_PIPELINE_SOURCE.vsix --baseContentUrl $BASE_CONTENT_URL
     artifacts:
       paths:
         - "*.vsix"
