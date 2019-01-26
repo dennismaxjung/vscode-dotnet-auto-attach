@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 19:07:21
+ * @Last Modified time: 2019-01-26 12:18:44
  */
 
 "use strict";
@@ -73,7 +73,8 @@ export default class DebuggerService implements Disposable {
 		path: string
 	): void {
 		let task = DotNetAutoAttach.Cache.RunningAutoAttachTasks.values().find(t =>
-			path.startsWith(t.Workspace.uri.fsPath)
+			//path.startsWith(t.Workspace.uri.fsPath)
+			path.startsWith(t.ProjectFolderPath)
 		);
 		if (
 			!DotNetAutoAttach.Cache.RunningDebugs.containsKey(pid) &&
@@ -81,7 +82,7 @@ export default class DebuggerService implements Disposable {
 			task
 		) {
 			baseConfig.processId = String(pid);
-			baseConfig.name += " - " + baseConfig.processId;
+			baseConfig.name += " - " + task.Project + " - " + baseConfig.processId;
 			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, baseConfig.name);
 			vscode.debug.startDebugging(undefined, baseConfig);
 		} else if (DotNetAutoAttach.Cache.DisconnectedDebugs.has(pid) && task) {

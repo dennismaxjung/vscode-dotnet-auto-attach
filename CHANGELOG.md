@@ -15,6 +15,8 @@ Calling out known issues can help limit users opening duplicate issues against y
 
 ### Changed
 
+- Changed naming of debug process in debug panel, now includes project name of the project which the debug session belongs to.
+
 ### Deprecated
 
 ### Removed

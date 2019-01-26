@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:34:31
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 14:32:42
+ * @Last Modified time: 2019-01-26 12:18:51
  */
 
 import { ProcessExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
@@ -30,10 +30,11 @@ export default class DotNetAutoAttachTask {
 		this._projectPath = (this._taskExec.task
 			.execution as ProcessExecution).args[2];
 
-		const name_regex = /^.+(\\|\/)(.+.csproj)/;
+		const name_regex = /(^.+)(\\|\/)(.+.csproj)/;
 		let matches = name_regex.exec(this._projectPath);
-		if (matches && matches.length === 3) {
-			this._project = matches[2];
+		if (matches && matches.length === 4) {
+			this._project = matches[3];
+			this._projectFolderPath = matches[1] + matches[2];
 		}
 	}
 	/**
@@ -71,6 +72,15 @@ export default class DotNetAutoAttachTask {
 	 * @memberof DotNetAutoAttachTask
 	 */
 	private _projectPath: string = "";
+
+	/**
+	 * The ProjectFolderPath
+	 *
+	 * @private
+	 * @type {string}
+	 * @memberof DotNetAutoAttachTask
+	 */
+	private _projectFolderPath: string = "";
 
 	/**
 	 * The Project
@@ -121,6 +131,18 @@ export default class DotNetAutoAttachTask {
 	public get ProjectPath(): string {
 		return this._projectPath;
 	}
+
+	/**
+	 * Gets the ProjectFolderPath.
+	 *
+	 * @readonly
+	 * @type {string}
+	 * @memberof DotNetAutoAttachTask
+	 */
+	public get ProjectFolderPath(): string {
+		return this._projectFolderPath;
+	}
+
 	/**
 	 * Gets the Project
 	 *
