@@ -21,6 +21,7 @@ build_package:
       - vsce package -o $CI_PROJECT_NAME-$CI_JOB_ID-$CI_PIPELINE_SOURCE.vsix --baseContentUrl $BASE_CONTENT_URL
     artifacts:
       name: "artifacts-$CI_PROJECT_NAME-$CI_JOB_ID"
+      expire_in: 2 weeks
       paths:
         - "*.vsix"
 
