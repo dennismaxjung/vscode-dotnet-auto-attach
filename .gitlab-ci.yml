@@ -16,9 +16,9 @@ build_package:
       paths:
       - node_modules/
     script:
-      - npm install -g vsce
-      - npm install
-      - vsce package --baseContentUrl '$BASE_CONTENT_URL'
+      - sudo npm install -g vsce
+      - sudo npm install
+      - sudo vsce package --baseContentUrl '$BASE_CONTENT_URL'
     artifacts:
       paths:
         - "*.vsix"
@@ -29,6 +29,10 @@ license_management:
     name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
     entrypoint: [""]
   stage: test
+  only:
+    - tags
+    - develop
+    - merge_requests  
   allow_failure: true
   script:
     - /run.sh analyze .
@@ -38,6 +42,11 @@ license_management:
 
 dependency_scanning:
   image: docker:stable
+  stage: test
+  only:
+    - tags
+    - develop
+    - merge_requests  
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
@@ -56,6 +65,11 @@ dependency_scanning:
 
 code_quality:
   image: docker:stable
+  stage: test
+  only:
+    - tags
+    - develop
+    - merge_requests  
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
