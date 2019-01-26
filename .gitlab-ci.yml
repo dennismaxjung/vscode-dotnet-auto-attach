@@ -35,6 +35,8 @@ deploy_package:
     except:
       - branches
       - merge_requests
+    variables:
+      GIT_STRATEGY: none
     script:
       - npm install --unsafe-perm -g vsce
       - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN
@@ -46,8 +48,9 @@ deploy_package_test:
       - tags
       - develop
       - merge_requests
+    variables:
+      GIT_STRATEGY: none
     script:
-      - npm install --unsafe-perm -g vsce
       - ls
 
 #=================== TEST ==========================#
