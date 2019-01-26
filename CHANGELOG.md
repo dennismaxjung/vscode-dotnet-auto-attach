@@ -21,6 +21,8 @@ Calling out known issues can help limit users opening duplicate issues against y
 
 ### Fixed
 
+- InitalConfiguration & launch.json are now generated if they were not present.
+
 ### Security
 
 ## [1.0.0] - 2018-09-25
