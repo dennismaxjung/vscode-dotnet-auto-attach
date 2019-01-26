@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-16 18:53:11
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-26 12:07:22
+ * @Last Modified time: 2019-01-26 12:30:08
  */
 
 import { clearInterval, setInterval } from "timers";
@@ -121,10 +121,9 @@ export default class AttachService implements Disposable {
 				if (matches && matches.length === 2) {
 					path = matches[1];
 				}
-				var defaultConfig = AttachService.GetDefaultConfig();
 				DotNetAutoAttach.DebugService.AttachDotNetDebugger(
 					p.pid,
-					defaultConfig,
+					AttachService.GetDefaultConfig(),
 					path
 				);
 			}
