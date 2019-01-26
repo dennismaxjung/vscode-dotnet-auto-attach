@@ -24,6 +24,20 @@ build_package:
       paths:
         - "*.vsix"
 
+#=================== DEPLOY - Package ==============#
+deploy_package:
+    image: node:latest
+    stage: deploy
+    only:
+      - tags
+      - /^v.*$/
+    except:
+      - branches
+      - merge_requests
+    script:
+      - npm install --unsafe-perm -g vsce
+      - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN
+
 #=================== TEST ==========================#
 license_management:
   image:
@@ -87,4 +101,3 @@ code_quality:
     reports:
       codequality: gl-code-quality-report.json
       
-#=================== Deploy - Package ==============#
