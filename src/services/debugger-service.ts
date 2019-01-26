@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-26 12:18:44
+ * @Last Modified time: 2019-01-26 13:59:57
  */
 
 "use strict";
@@ -60,6 +60,7 @@ export default class DebuggerService implements Disposable {
 			}
 		});
 	}
+
 	/**
 	 * Attaches the dotnet debugger to a specific process.
 	 *
@@ -73,7 +74,6 @@ export default class DebuggerService implements Disposable {
 		path: string
 	): void {
 		let task = DotNetAutoAttach.Cache.RunningAutoAttachTasks.values().find(t =>
-			//path.startsWith(t.Workspace.uri.fsPath)
 			path.startsWith(t.ProjectFolderPath)
 		);
 		if (
@@ -82,19 +82,13 @@ export default class DebuggerService implements Disposable {
 			task
 		) {
 			baseConfig.processId = String(pid);
-			baseConfig.name += " - " + task.Project + " - " + baseConfig.processId;
+			baseConfig.name = task.Project + " - " + baseConfig.name + " - " + baseConfig.processId;
 			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, baseConfig.name);
 			vscode.debug.startDebugging(undefined, baseConfig);
 		} else if (DotNetAutoAttach.Cache.DisconnectedDebugs.has(pid) && task) {
 			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, "");
 			DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
 
-			/*let project = "";
-			const name_regex = /^'.+(\\|\/)(.+.csproj)'/;
-			let matches = name_regex.exec(task.ProjectPath);
-			if (matches && matches.length === 3) {
-				project = matches[2];
-			}*/
 			vscode.window
 				.showInformationMessage(
 					`Debug disconnected. Reattach to ${task.Project} (${pid}) ?`,
