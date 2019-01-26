@@ -40,18 +40,6 @@ deploy_package:
     script:
       - npm install --unsafe-perm -g vsce
       - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN
-      
-deploy_package_test:
-    image: node:latest
-    stage: deploy
-    only:
-      - tags
-      - develop
-      - merge_requests
-    variables:
-      GIT_STRATEGY: none
-    script:
-      - ls
 
 #=================== TEST ==========================#
 license_management:
