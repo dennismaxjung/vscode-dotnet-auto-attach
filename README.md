@@ -46,6 +46,22 @@ This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restart
 
 When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you can debug your project. Pick the launch config from the dropdown on the Debug pane in Code. Press the play button or F5 to start.
 
+#### Sample launch config
+```json
+    {
+      "type": "DotNetAutoAttach",
+      "request": "launch",
+      "name": ".NET Core Watch",
+      "args": [
+        
+      ],
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+
+```
+
 ### Configuration
 
 The extension operates currently only in one mode - it can launch your project you want to debug with dotnet-watch.
