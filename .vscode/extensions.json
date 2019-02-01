@@ -10,6 +10,7 @@
 		"fatihacet.gitlab-workflow",
 		"joelday.docthis",
 		"mikey.vscode-fileheader",
-		"editorconfig.editorconfig"
+		"editorconfig.editorconfig",
+		"aaron-bond.better-comments"
 	]
 }
