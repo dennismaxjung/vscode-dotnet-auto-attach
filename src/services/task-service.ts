@@ -162,24 +162,14 @@ export default class TaskService implements Disposable {
 	 */
 	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
 
+		// Check if there is a no project configured
 		if (!config.project || 0 === config.project.length) {
 			workspace.findFiles("**/*.csproj").then(k => {
 				var tmp = k.filter(m =>
 					m.toString().startsWith(config.workspace.uri.toString())
 				);
 				if (tmp.length > 1) {
-					let quickPickOptions: QuickPickOptions = {
-						canPickMany: false,
-						placeHolder:
-							"Select the project to launch the DotNet Watch task for.",
-						matchOnDescription: true,
-						matchOnDetail: true
-					};
-					window
-						.showQuickPick(
-							tmp.map(k => new ProjectQuickPickItem(k)),
-							quickPickOptions
-						)
+					this.OpenProjectQuickPick(tmp)
 						.then(s => {
 							if (s) {
 								TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
@@ -190,11 +180,66 @@ export default class TaskService implements Disposable {
 				}
 			});
 		} else {
-			// TODO START with project from config.
-			//TaskService.GenerateTask(config, config.project)
+			// TODO: START with project from config.
+			let projectFile = Uri.parse(config.project);
+			let isCsproj = config.project.endsWith(".csproj");
+
+			// if it is a full path to a .csproj file
+			if (projectFile.scheme === "file" && isCsproj) {
+				TaskService.StartTask(TaskService.GenerateTask(config, projectFile));
+			}
+			// if it is not a full path but only a name of a .csproj file
+			else if (isCsproj) {
+				workspace.findFiles(config.project).then(k => {
+					if (k.length !== 0) {
+						// TODO: Is there a case where it could be more than one file ?
+						TaskService.StartTask(TaskService.GenerateTask(config, k[0]));
+					}
+					else {
+						workspace.findFiles("**/" + config.project).then(p => {
+							// TODO: Is there a case where it could be more than one file ?
+							TaskService.StartTask(TaskService.GenerateTask(config, p[0]));
+						});
+						// TODO: Error message if project does not exist!
+					}
+				});
+			}
+			// if it is not a full path but only a folder name
+			else {
+				workspace.findFiles(config.project + "/*.csproj").then(k => {
+					// TODO: Is there a case where it could be more than one file ?
+					TaskService.StartTask(TaskService.GenerateTask(config, k[0]));
+				});
+			}
+
+			// TODO: Error message if project does not exist!
+
 		}
 
 	}
+	/**
+	 * Opens a Project Quick Pick
+	 *
+	 * @private
+	 * @param {Uri[]} uris
+	 * @returns {(Thenable<ProjectQuickPickItem | undefined>)}
+	 * @memberof TaskService
+	 */
+	private OpenProjectQuickPick(uris: Array<Uri>): Thenable<ProjectQuickPickItem | undefined> {
+		let quickPickOptions: QuickPickOptions = {
+			canPickMany: false,
+			placeHolder:
+				"Select the project to launch the DotNet Watch task for.",
+			matchOnDescription: true,
+			matchOnDetail: true
+		};
+		return window
+			.showQuickPick(
+				uris.map(k => new ProjectQuickPickItem(k)),
+				quickPickOptions
+			);
+	}
+
 	/**
 	 * Dispose.
 	 *
