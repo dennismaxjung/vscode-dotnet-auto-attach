@@ -112,7 +112,7 @@ export default class TaskService implements Disposable {
 		} else {
 			window.showInformationMessage(
 				".NET Watch Task already started for the project " +
-					task.definition.type.replace("Watch ", "")
+				task.definition.type.replace("Watch ", "")
 			);
 		}
 	}
@@ -161,32 +161,39 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
-		workspace.findFiles("**/*.csproj").then(k => {
-			var tmp = k.filter(m =>
-				m.toString().startsWith(config.workspace.uri.toString())
-			);
-			if (tmp.length > 1) {
-				let quickPickOptions: QuickPickOptions = {
-					canPickMany: false,
-					placeHolder:
-						"Select the project to launch the DotNet Watch task for.",
-					matchOnDescription: true,
-					matchOnDetail: true
-				};
-				window
-					.showQuickPick(
-						tmp.map(k => new ProjectQuickPickItem(k)),
-						quickPickOptions
-					)
-					.then(s => {
-						if (s) {
-							TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
-						}
-					});
-			} else {
-				TaskService.StartTask(TaskService.GenerateTask(config, tmp[0]));
-			}
-		});
+
+		if (!config.project || 0 === config.project.length) {
+			workspace.findFiles("**/*.csproj").then(k => {
+				var tmp = k.filter(m =>
+					m.toString().startsWith(config.workspace.uri.toString())
+				);
+				if (tmp.length > 1) {
+					let quickPickOptions: QuickPickOptions = {
+						canPickMany: false,
+						placeHolder:
+							"Select the project to launch the DotNet Watch task for.",
+						matchOnDescription: true,
+						matchOnDetail: true
+					};
+					window
+						.showQuickPick(
+							tmp.map(k => new ProjectQuickPickItem(k)),
+							quickPickOptions
+						)
+						.then(s => {
+							if (s) {
+								TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
+							}
+						});
+				} else {
+					TaskService.StartTask(TaskService.GenerateTask(config, tmp[0]));
+				}
+			});
+		} else {
+			// TODO START with project from config.
+			//TaskService.GenerateTask(config, config.project)
+		}
+
 	}
 	/**
 	 * Dispose.

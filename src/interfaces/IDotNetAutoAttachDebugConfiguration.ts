@@ -21,4 +21,5 @@ export default interface IDotNetAutoAttachDebugConfiguration
 	workspace: WorkspaceFolder;
 	args: Array<string>;
 	env?: { [key: string]: string };
+	project: string;
 }
