@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-02 11:54:00
+ * @Last Modified time: 2019-02-02 14:50:39
  */
 
 import {
@@ -155,7 +155,6 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
-
 		// Check if there is a no project configured
 		if (!config.project || 0 === config.project.length) {
 			this.StartDotNetWatchTaskNoProjectConfig(config);
@@ -215,22 +214,27 @@ export default class TaskService implements Disposable {
 				}
 				else {
 					workspace.findFiles("**/" + config.project).then(p => {
-						// TODO: Is there a case where it could be more than one file ?
-						TaskService.StartTask(TaskService.GenerateTask(config, p[0]));
+						if (p.length !== 0) {
+							// TODO: Is there a case where it could be more than one file ?
+							TaskService.StartTask(TaskService.GenerateTask(config, p[0]));
+						} else {
+							DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config);
+						}
 					});
-					// TODO: Error message if project does not exist!
 				}
 			});
 		}
 		// if it is not a full path but only a folder name
 		else {
 			workspace.findFiles(config.project + "/*.csproj").then(k => {
-				// TODO: Is there a case where it could be more than one file ?
-				TaskService.StartTask(TaskService.GenerateTask(config, k[0]));
+				if (k.length !== 0) {
+					// TODO: Is there a case where it could be more than one file ?
+					TaskService.StartTask(TaskService.GenerateTask(config, k[0]));
+				} else {
+					DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config);
+				}
 			});
 		}
-
-		// TODO: Error message if project does not exist!
 	}
 
 	/**
