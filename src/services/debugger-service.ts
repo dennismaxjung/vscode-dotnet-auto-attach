@@ -4,13 +4,14 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-26 13:59:57
+ * @Last Modified time: 2019-02-02 11:23:11
  */
 
 "use strict";
 import * as vscode from "vscode";
 import { debug, Disposable } from "vscode";
 import DotNetAutoAttach from "../dotNetAutoAttach";
+import { DebugDisconnectedEnum } from "../enums/DebugDisconnectedEnum";
 
 /**
  * The DebuggerService. Provide functionality for starting, and manageing debug sessions.
@@ -89,39 +90,32 @@ export default class DebuggerService implements Disposable {
 			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, "");
 			DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
 
-			vscode.window
-				.showInformationMessage(
-					`Debug disconnected. Reattach to ${task.Project} (${pid}) ?`,
-					"Yes",
-					"No",
-					"Stop watch task"
-				)
-				.then(k => {
-					if (k) {
-						if (k === "Yes") {
-							baseConfig.processId = String(pid);
-							baseConfig.name += " - " + baseConfig.processId;
-							DotNetAutoAttach.Cache.RunningDebugs.setValue(
-								pid,
-								baseConfig.name
-							);
-							vscode.debug.startDebugging(undefined, baseConfig);
-						} else if (k === "Stop watch task") {
-							if (task) {
-								task.Terminate();
-								setTimeout(() => {
-									DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
-									DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
-								}, 2000);
-							}
+			DotNetAutoAttach.UiService.DebugDisconnectedInformationMessage(task.Project, pid).then(k => {
+				if (k) {
+					if (k === DebugDisconnectedEnum.Yes) {
+						baseConfig.processId = String(pid);
+						baseConfig.name += " - " + baseConfig.processId;
+						DotNetAutoAttach.Cache.RunningDebugs.setValue(
+							pid,
+							baseConfig.name
+						);
+						vscode.debug.startDebugging(undefined, baseConfig);
+					} else if (k === DebugDisconnectedEnum.Stop) {
+						if (task) {
+							task.Terminate();
+							setTimeout(() => {
+								DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
+								DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
+							}, 2000);
 						}
-					} else {
-						setTimeout(() => {
-							DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
-							DotNetAutoAttach.Cache.DisconnectedDebugs.add(pid);
-						}, 60000);
 					}
-				});
+				} else {
+					setTimeout(() => {
+						DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
+						DotNetAutoAttach.Cache.DisconnectedDebugs.add(pid);
+					}, 60000);
+				}
+			});
 		}
 	}
 

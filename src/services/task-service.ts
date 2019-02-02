@@ -4,13 +4,12 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 15:44:50
+ * @Last Modified time: 2019-02-02 11:30:32
  */
 
 import {
 	Disposable,
 	ProcessExecution,
-	QuickPickOptions,
 	Task,
 	TaskDefinition,
 	TaskEndEvent,
@@ -18,13 +17,11 @@ import {
 	TaskProcessStartEvent,
 	tasks,
 	Uri,
-	window,
 	workspace
 } from "vscode";
 import DotNetAutoAttach from "../dotNetAutoAttach";
 import DotNetAutoAttachDebugConfiguration from "../interfaces/IDotNetAutoAttachDebugConfiguration";
 import DotNetAutoAttachTask from "../models/DotNetAutoAttachTask";
-import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
 
 /**
  * The TaskService, provides functions to manage tasks.
@@ -110,10 +107,7 @@ export default class TaskService implements Disposable {
 				);
 			});
 		} else {
-			window.showInformationMessage(
-				".NET Watch Task already started for the project " +
-				task.definition.type.replace("Watch ", "")
-			);
+			DotNetAutoAttach.UiService.TaskAlreadyStartedInformationMessage(task.definition.type.replace("Watch ", ""));
 		}
 	}
 
@@ -169,7 +163,7 @@ export default class TaskService implements Disposable {
 					m.toString().startsWith(config.workspace.uri.toString())
 				);
 				if (tmp.length > 1) {
-					this.OpenProjectQuickPick(tmp)
+					DotNetAutoAttach.UiService.OpenProjectQuickPick(tmp)
 						.then(s => {
 							if (s) {
 								TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
@@ -217,28 +211,7 @@ export default class TaskService implements Disposable {
 		}
 
 	}
-	/**
-	 * Opens a Project Quick Pick
-	 *
-	 * @private
-	 * @param {Uri[]} uris
-	 * @returns {(Thenable<ProjectQuickPickItem | undefined>)}
-	 * @memberof TaskService
-	 */
-	private OpenProjectQuickPick(uris: Array<Uri>): Thenable<ProjectQuickPickItem | undefined> {
-		let quickPickOptions: QuickPickOptions = {
-			canPickMany: false,
-			placeHolder:
-				"Select the project to launch the DotNet Watch task for.",
-			matchOnDescription: true,
-			matchOnDetail: true
-		};
-		return window
-			.showQuickPick(
-				uris.map(k => new ProjectQuickPickItem(k)),
-				quickPickOptions
-			);
-	}
+
 
 	/**
 	 * Dispose.
