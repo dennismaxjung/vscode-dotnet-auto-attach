@@ -3,8 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 19:07:21
+ * @Last Modified by: Dmitry Kosinov
+ * @Last Modified time: 2019-02-06 16:27:33
  */
 
 "use strict";
@@ -30,7 +30,10 @@ export default class DebuggerService implements Disposable {
 				DebuggerService.TryToRemoveDisconnectedDebugSession
 			)
 		);
+
+		vscode.debug.onDidStartDebugSession(DebuggerService.AddDebugSession);
 	}
+
 	/**
 	 * A list of all disposables.
 	 *
@@ -39,6 +42,11 @@ export default class DebuggerService implements Disposable {
 	 * @memberof DebuggerService
 	 */
 	private disposables: Set<Disposable>;
+
+	/** Adds real active debug session in cache when it starts */
+	private static AddDebugSession(session: vscode.DebugSession): void {
+		DotNetAutoAttach.Cache.ActiveDebugSessions.push(session);
+	}
 
 	/**
 	 * Try's to remove deconnected debugging sessions.
@@ -59,7 +67,38 @@ export default class DebuggerService implements Disposable {
 				}, 2000);
 			}
 		});
+
+		// Remove from active DebugSessions
+		DotNetAutoAttach.Cache.ActiveDebugSessions = DotNetAutoAttach.Cache.ActiveDebugSessions.filter(
+			s => s.name !== session.name
+		);
 	}
+
+	/**
+	 * Search for old debug session without runned processes.
+	 * It happens when debugger stops on breakpoint and code changes with watch restart
+	 * @param matchedPids
+	 */
+	public DisconnectOldDotNetDebugger(matchedPids: Array<number>) {
+		let runningDebugs = DotNetAutoAttach.Cache.RunningDebugs.keys();
+
+		// If matched processes does not have running debugs then we need to kill this debug
+		for (var debug of runningDebugs) {
+			if (matchedPids.indexOf(debug) < 0) {
+				// Disconnect old debug
+				const debugName = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
+				if (debugName) {
+					const oldSession = DotNetAutoAttach.Cache.ActiveDebugSessions.find(
+						s => s.name === debugName
+					);
+					if (oldSession) {
+						oldSession.customRequest("disconnect");
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Attaches the dotnet debugger to a specific process.
 	 *
