@@ -3,8 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-16 18:53:11
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-26 12:30:08
+ * @Last Modified by: Dmitry Kosinov
+ * @Last Modified time: 2019-02-06 16:27:08
  */
 
 import { clearInterval, setInterval } from "timers";
@@ -109,6 +109,8 @@ export default class AttachService implements Disposable {
 				);
 			}
 		});
+		let matchedProcesses = new Array<number>();
+
 		processesToScan.forEach(p => {
 			if (
 				(p.cml.startsWith('"dotnet" exec ') ||
@@ -121,6 +123,8 @@ export default class AttachService implements Disposable {
 				if (matches && matches.length === 2) {
 					path = matches[1];
 				}
+				matchedProcesses.push(p.pid);
+
 				DotNetAutoAttach.DebugService.AttachDotNetDebugger(
 					p.pid,
 					AttachService.GetDefaultConfig(),
@@ -128,6 +132,7 @@ export default class AttachService implements Disposable {
 				);
 			}
 		});
+		DotNetAutoAttach.DebugService.DisconnectOldDotNetDebugger(matchedProcesses);
 	}
 
 	/**

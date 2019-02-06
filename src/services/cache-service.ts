@@ -3,12 +3,12 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 12:30:24
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 19:02:45
+ * @Last Modified by: Dmitry Kosinov
+ * @Last Modified time: 2019-02-06 16:27:48
  */
 
 import { Dictionary } from "typescript-collections";
-import { Disposable } from "vscode";
+import { DebugSession, Disposable } from "vscode";
 import DotNetAutoAttachTask from "../models/DotNetAutoAttachTask";
 
 /**
@@ -26,7 +26,7 @@ export default class CacheService implements Disposable {
 		this.RunningAutoAttachTasks = new Dictionary<
 			string,
 			DotNetAutoAttachTask
-			>();
+		>();
 		this.RunningDebugs = new Dictionary<number, string>();
 		this.DisconnectedDebugs = new Set<number>();
 	}
@@ -48,6 +48,8 @@ export default class CacheService implements Disposable {
 	 * @memberof CacheService
 	 */
 	public RunningDebugs: Dictionary<number, string>;
+
+	public ActiveDebugSessions: Array<DebugSession> = new Array<DebugSession>();
 
 	/**
 	 * A list of all debugging sessions which are diconnected.
