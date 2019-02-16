@@ -70,17 +70,6 @@
 						}
 					}
 				},
-				"initialConfigurations": [
-					{
-						"type": "DotNetAutoAttach",
-						"request": "launch",
-						"name": ".NET Core Watch",
-						"args": [],
-						"env": {
-							"ASPNETCORE_ENVIRONMENT": "Development"
-						}
-					}
-				],
 				"configurationSnippets": [
 					{
 						"label": ".NET: Auto Attach Debug (dotnet-watch)",
