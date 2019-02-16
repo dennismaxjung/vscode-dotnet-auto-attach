@@ -4,11 +4,12 @@
  * @Author: Konrad Müller
  * @Date: 2019-02-02 10:33:23
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-02 12:43:42
+ * @Last Modified time: 2019-02-16 23:46:01
  */
 
 import { Disposable, QuickPickOptions, Uri, window } from "vscode";
 import { DebugDisconnectedEnum } from "../enums/DebugDisconnectedEnum";
+import { MultipleProjectsEnum } from "../enums/MultipleProjectsEnum";
 import DotNetAutoAttachDebugConfiguration from "../interfaces/IDotNetAutoAttachDebugConfiguration";
 import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
 
@@ -41,6 +42,32 @@ export default class UiService implements Disposable {
 				uris.map(k => new ProjectQuickPickItem(k)),
 				quickPickOptions
 			);
+	}
+
+	/**
+	 * Opens a Multiple Project Found Information Message.
+	 *
+	 * @returns {(Thenable<MultipleProjectsEnum | undefined>)}
+	 * @memberof UiService
+	 */
+	public MultipleProjectsFoundInformationMessage(): Thenable<MultipleProjectsEnum> {
+		return window.showInformationMessage(
+			"Multiple projects where found, would you like to select a specific for the launch config?",
+			"Yes",
+			"No"
+		).then(ret => {
+			switch (ret) {
+				case "Yes":
+					return MultipleProjectsEnum.Yes;
+					break;
+				case "No":
+					return MultipleProjectsEnum.No;
+					break;
+				default:
+					return MultipleProjectsEnum.Exit;
+					break;
+			}
+		});
 	}
 
 	/**
