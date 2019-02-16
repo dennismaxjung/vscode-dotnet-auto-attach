@@ -50,7 +50,9 @@ license_management:
   only:
     - tags
     - develop
-    - merge_requests  
+    - merge_requests
+  variables:
+		NODE_ENV: production
   allow_failure: true
   script:
     - /run.sh analyze .
@@ -64,7 +66,7 @@ dependency_scanning:
   only:
     - tags
     - develop
-    - merge_requests  
+    - merge_requests
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
@@ -87,7 +89,7 @@ code_quality:
   only:
     - tags
     - develop
-    - merge_requests  
+    - merge_requests
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
@@ -103,4 +105,4 @@ code_quality:
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
-      
+
