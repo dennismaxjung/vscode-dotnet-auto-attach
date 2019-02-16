@@ -11,6 +11,7 @@
 		"joelday.docthis",
 		"mikey.vscode-fileheader",
 		"editorconfig.editorconfig",
-		"aaron-bond.better-comments"
+		"aaron-bond.better-comments",
+		"gruntfuggly.todo-tree"
 	]
 }
