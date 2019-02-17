@@ -24,6 +24,7 @@ Calling out known issues can help limit users opening duplicate issues against y
 ### Fixed
 
 - InitalConfiguration & launch.json are now generated if they were not present.
+- Fixed bug where dotnet watch could not rebuild a project if debugger hangs on breakpoint.
 
 ### Security
 

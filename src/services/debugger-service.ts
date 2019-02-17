@@ -3,8 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
- * @Last Modified by: Dmitry Kosinov
- * @Last Modified time: 2019-02-06 16:27:33
+ * @Last Modified by: Dennis Jung
+ * @Last Modified time: 2019-02-17 16:26:54
  */
 
 "use strict";
@@ -30,8 +30,11 @@ export default class DebuggerService implements Disposable {
 				DebuggerService.TryToRemoveDisconnectedDebugSession
 			)
 		);
-
-		vscode.debug.onDidStartDebugSession(DebuggerService.AddDebugSession);
+		this.disposables.add(
+			debug.onDidStartDebugSession(
+				DebuggerService.AddDebugSession
+			)
+		);
 	}
 
 	/**
@@ -43,9 +46,20 @@ export default class DebuggerService implements Disposable {
 	 */
 	private disposables: Set<Disposable>;
 
-	/** Adds real active debug session in cache when it starts */
+	/**
+	 * Adds real active debug session in cache when it starts
+	 *
+	 * @private
+	 * @static
+	 * @param {vscode.DebugSession} session
+	 * @memberof DebuggerService
+	 */
 	private static AddDebugSession(session: vscode.DebugSession): void {
-		DotNetAutoAttach.Cache.ActiveDebugSessions.push(session);
+		DotNetAutoAttach.Cache.RunningDebugs.forEach((k, v) => {
+			if (v.name === session.name) {
+				DotNetAutoAttach.Cache.RunningDebugs.setValue(k, session);
+			}
+		});
 	}
 
 	/**
@@ -60,18 +74,13 @@ export default class DebuggerService implements Disposable {
 		session: vscode.DebugSession
 	): void {
 		DotNetAutoAttach.Cache.RunningDebugs.forEach((k, v) => {
-			if (v === session.name) {
+			if (v.name === session.name) {
 				setTimeout(() => {
 					DotNetAutoAttach.Cache.RunningDebugs.remove(k);
 					DotNetAutoAttach.Cache.DisconnectedDebugs.add(k);
 				}, 2000);
 			}
 		});
-
-		// Remove from active DebugSessions
-		DotNetAutoAttach.Cache.ActiveDebugSessions = DotNetAutoAttach.Cache.ActiveDebugSessions.filter(
-			s => s.name !== session.name
-		);
 	}
 
 	/**
@@ -86,14 +95,9 @@ export default class DebuggerService implements Disposable {
 		for (var debug of runningDebugs) {
 			if (matchedPids.indexOf(debug) < 0) {
 				// Disconnect old debug
-				const debugName = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
-				if (debugName) {
-					const oldSession = DotNetAutoAttach.Cache.ActiveDebugSessions.find(
-						s => s.name === debugName
-					);
-					if (oldSession) {
-						oldSession.customRequest("disconnect");
-					}
+				const debugSession = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
+				if (debugSession) {
+					debugSession.customRequest("disconnect");
 				}
 			}
 		}
@@ -121,10 +125,10 @@ export default class DebuggerService implements Disposable {
 		) {
 			baseConfig.processId = String(pid);
 			baseConfig.name = task.Project + " - " + baseConfig.name + " - " + baseConfig.processId;
-			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, baseConfig.name);
+			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, { name: baseConfig.name } as vscode.DebugSession);
 			vscode.debug.startDebugging(undefined, baseConfig);
 		} else if (DotNetAutoAttach.Cache.DisconnectedDebugs.has(pid) && task) {
-			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, "");
+			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, { name: "" } as vscode.DebugSession);
 			DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
 
 			vscode.window
@@ -141,7 +145,7 @@ export default class DebuggerService implements Disposable {
 							baseConfig.name += " - " + baseConfig.processId;
 							DotNetAutoAttach.Cache.RunningDebugs.setValue(
 								pid,
-								baseConfig.name
+								{ name: baseConfig.name } as vscode.DebugSession
 							);
 							vscode.debug.startDebugging(undefined, baseConfig);
 						} else if (k === "Stop watch task") {
