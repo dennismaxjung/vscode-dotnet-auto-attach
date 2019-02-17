@@ -3,13 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
-<<<<<<< HEAD
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-26 13:59:57
-=======
  * @Last Modified by: Dmitry Kosinov
  * @Last Modified time: 2019-02-06 16:27:33
->>>>>>> Possibly rsolve issue #10
  */
 
 "use strict";
