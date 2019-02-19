@@ -64,7 +64,7 @@
 							},
 							"project": {
 								"type": "string",
-								"description": "The project to start, bypass the quick pick menu",
+								"description": "The project to start, bypass the quick pick menu.",
 								"default": ""
 							}
 						}

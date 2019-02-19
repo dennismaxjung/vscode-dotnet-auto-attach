@@ -4,12 +4,11 @@
  * @Author: Konrad Müller
  * @Date: 2019-02-02 10:33:23
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-16 23:46:01
+ * @Last Modified time: 2019-02-19 13:53:01
  */
 
 import { Disposable, QuickPickOptions, Uri, window } from "vscode";
 import { DebugDisconnectedEnum } from "../enums/DebugDisconnectedEnum";
-import { MultipleProjectsEnum } from "../enums/MultipleProjectsEnum";
 import DotNetAutoAttachDebugConfiguration from "../interfaces/IDotNetAutoAttachDebugConfiguration";
 import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
 
@@ -22,7 +21,7 @@ import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
 export default class UiService implements Disposable {
 
 	/**
-	 * Opens a Project Quick Pick
+	 * Opens a Project Quick Pick.
 	 *
 	 * @private
 	 * @param {Uri[]} uris
@@ -45,29 +44,21 @@ export default class UiService implements Disposable {
 	}
 
 	/**
-	 * Opens a Multiple Project Found Information Message.
+	 * Opens a MultiSelectProject QuickPick.
 	 *
-	 * @returns {(Thenable<MultipleProjectsEnum | undefined>)}
+	 * @param {Array<Uri>} uris
+	 * @returns {(Thenable<Array<ProjectQuickPickItem>| undefined>)}
 	 * @memberof UiService
 	 */
-	public MultipleProjectsFoundInformationMessage(): Thenable<MultipleProjectsEnum> {
-		return window.showInformationMessage(
-			"Multiple projects where found, would you like to select a specific for the launch config?",
-			"Yes",
-			"No"
-		).then(ret => {
-			switch (ret) {
-				case "Yes":
-					return MultipleProjectsEnum.Yes;
-					break;
-				case "No":
-					return MultipleProjectsEnum.No;
-					break;
-				default:
-					return MultipleProjectsEnum.Exit;
-					break;
-			}
-		});
+	public OpenMultiSelectProjectQuickPick(uris: Array<Uri>): Thenable<Array<ProjectQuickPickItem> | undefined> {
+		return window.showQuickPick(
+			uris.map(k => new ProjectQuickPickItem(k)),
+			{
+				canPickMany: true,
+				placeHolder: "Select the projects you want to add to launch.json.",
+				matchOnDescription: true,
+				matchOnDetail: true
+			});
 	}
 
 	/**

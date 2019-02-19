@@ -12,6 +12,7 @@ Calling out known issues can help limit users opening duplicate issues against y
 ## [Unreleased]
 
 ### Added
+- Added project property to DotNetAutoAttach DebugConfiguration of launch.json. The project property allow to start a specific project and let you bypass the quick pick menu.
 
 ### Changed
 
