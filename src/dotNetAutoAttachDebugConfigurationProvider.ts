@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2019-02-16 22:01:33
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-16 23:46:47
+ * @Last Modified time: 2019-02-19 13:51:15
  */
 
 import {
@@ -16,7 +16,6 @@ import {
 	WorkspaceFolder
 } from "vscode";
 import DotNetAutoAttach from "./dotNetAutoAttach";
-import { MultipleProjectsEnum } from "./enums/MultipleProjectsEnum";
 import IDotNetAutoAttachDebugConfiguration from "./interfaces/IDotNetAutoAttachDebugConfiguration";
 
 /**
@@ -28,6 +27,33 @@ import IDotNetAutoAttachDebugConfiguration from "./interfaces/IDotNetAutoAttachD
  */
 export default class DotNetAutoAttachDebugConfigurationProvider
 	implements DebugConfigurationProvider {
+
+	/**
+	 * Get the default DebugConfiguration for DotNetAutoAttach.
+	 *
+	 * @private
+	 * @static
+	 * @returns {DebugConfiguration}
+	 * @memberof DotNetAutoAttachDebugConfigurationProvider
+	 */
+	private static GetDefaultDotNetAutoAttachDebugConfig(project?: string): DebugConfiguration {
+		var defaultConfig: DebugConfiguration = {
+			type: "DotNetAutoAttach",
+			request: "launch",
+			name: ".NET Core Watch",
+			args: [],
+			env: {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			}
+		};
+
+		if (project && 0 !== project.length) {
+			defaultConfig.project = project;
+			defaultConfig.name += `: ${project}`;
+		}
+
+		return defaultConfig;
+	}
 
 	/**
 	 * Resolves a [debug configuration](#DebugConfiguration) by filling in missing values or by adding/changing/removing attributes.
@@ -66,49 +92,27 @@ export default class DotNetAutoAttachDebugConfigurationProvider
 	 * @memberof DotNetAutoAttachDebugConfigurationProvider
 	 */
 	public provideDebugConfigurations(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<Array<IDotNetAutoAttachDebugConfiguration>> {
-
-		let config: DebugConfiguration = {
-			type: "DotNetAutoAttach",
-			request: "launch",
-			name: ".NET Core Watch",
-			args: [],
-			env: {
-				"ASPNETCORE_ENVIRONMENT": "Development"
-			}
-		};
 		if (folder) {
-
 			return Promise.resolve(
 				workspace.findFiles("**/*.csproj").then(k => {
 					var tmp = k.filter(m =>
 						m.toString().startsWith(folder.uri.toString())
 					);
 					if (tmp.length > 1) {
-						return DotNetAutoAttach.UiService.MultipleProjectsFoundInformationMessage().then(l => {
-							switch (l) {
-								case (MultipleProjectsEnum.Exit):
-									return new Array<IDotNetAutoAttachDebugConfiguration>();
-									break;
-								case (MultipleProjectsEnum.No):
-									return new Array<IDotNetAutoAttachDebugConfiguration>(config as IDotNetAutoAttachDebugConfiguration);
-									break;
-								case (MultipleProjectsEnum.Yes):
-									return DotNetAutoAttach.UiService.OpenProjectQuickPick(tmp).then(p => {
-										if (p) {
-											config.project = p.label;
-											config.name += `: ${p.label}`;
-											return new Array<IDotNetAutoAttachDebugConfiguration>(config as IDotNetAutoAttachDebugConfiguration);
-										}
-									});
-									break;
+						return DotNetAutoAttach.UiService.OpenMultiSelectProjectQuickPick(tmp).then(m => {
+							if (m && m.length !== 0) {
+								return m.map(o => DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig(o.label)) as Array<IDotNetAutoAttachDebugConfiguration>;
+							}
+							else {
+								return new Array<IDotNetAutoAttachDebugConfiguration>(DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig() as IDotNetAutoAttachDebugConfiguration);
 							}
 						});
 					} else {
-						return new Array<IDotNetAutoAttachDebugConfiguration>(config as IDotNetAutoAttachDebugConfiguration);
+						return new Array<IDotNetAutoAttachDebugConfiguration>(DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig() as IDotNetAutoAttachDebugConfiguration);
 					}
 				}));
 		}
-		return new Array<IDotNetAutoAttachDebugConfiguration>(config as IDotNetAutoAttachDebugConfiguration);
+		return new Array<IDotNetAutoAttachDebugConfiguration>(DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig() as IDotNetAutoAttachDebugConfiguration);
 
 	}
 }
