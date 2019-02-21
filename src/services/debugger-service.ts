@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-17 16:26:54
+ * @Last Modified time: 2019-02-21 13:12:30
  */
 
 "use strict";
@@ -84,23 +84,50 @@ export default class DebuggerService implements Disposable {
 	}
 
 	/**
+	 * Disconnects the running debug session with the given id.
+	 *
+	 * @private
+	 * @param {number} debugSessionId
+	 * @memberof DebuggerService
+	 */
+	private DisconnectDebugger(debugSessionId: number): void {
+		// Disconnect old debug
+		let debugSession = DotNetAutoAttach.Cache.RunningDebugs.getValue(debugSessionId);
+		if (debugSession) {
+			debugSession.customRequest("disconnect");
+		}
+	}
+
+	/**
 	 * Search for old debug session without runned processes.
 	 * It happens when debugger stops on breakpoint and code changes with watch restart
-	 * @param matchedPids
+	 *
+	 * @param {Array<number>} matchedPids
+	 * @memberof DebuggerService
 	 */
 	public DisconnectOldDotNetDebugger(matchedPids: Array<number>) {
-		let runningDebugs = DotNetAutoAttach.Cache.RunningDebugs.keys();
 
 		// If matched processes does not have running debugs then we need to kill this debug
-		for (var debug of runningDebugs) {
-			if (matchedPids.indexOf(debug) < 0) {
-				// Disconnect old debug
-				const debugSession = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
-				if (debugSession) {
-					debugSession.customRequest("disconnect");
+		DotNetAutoAttach.Cache.RunningDebugs.keys()
+			.forEach(runningDebug => {
+				if (matchedPids.indexOf(runningDebug) < 0) {
+					this.DisconnectDebugger(runningDebug);
 				}
-			}
-		}
+			});
+		/*
+				let runningDebugs = DotNetAutoAttach.Cache.RunningDebugs.keys();
+
+				// If matched processes does not have running debugs then we need to kill this debug
+				for (var debug of runningDebugs) {
+					if (matchedPids.indexOf(debug) < 0) {
+						// Disconnect old debug
+						const debugSession = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
+						if (debugSession) {
+							debugSession.customRequest("disconnect");
+						}
+					}
+				}
+		*/
 	}
 
 	/**
