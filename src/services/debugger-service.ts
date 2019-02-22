@@ -115,20 +115,6 @@ export default class DebuggerService implements Disposable {
 					this.DisconnectDebugger(runningDebug);
 				}
 			});
-		/*
-				let runningDebugs = DotNetAutoAttach.Cache.RunningDebugs.keys();
-
-				// If matched processes does not have running debugs then we need to kill this debug
-				for (var debug of runningDebugs) {
-					if (matchedPids.indexOf(debug) < 0) {
-						// Disconnect old debug
-						const debugSession = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
-						if (debugSession) {
-							debugSession.customRequest("disconnect");
-						}
-					}
-				}
-		*/
 	}
 
 	/**
