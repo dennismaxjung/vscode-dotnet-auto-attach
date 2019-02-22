@@ -41,6 +41,7 @@ export default class TaskService implements Disposable {
 			tasks.onDidStartTaskProcess(TaskService.IsWatcherStartedSetProcessId)
 		);
 	}
+
 	/**
 	 * A list of all disposables.
 	 *
@@ -164,6 +165,53 @@ export default class TaskService implements Disposable {
 	}
 
 	/**
+	 * Checks the files which where found.
+	 *
+	 * @private
+	 * @param {Array<Uri>} filesFound
+	 * @returns {(Uri | undefined)}
+	 * @memberof TaskService
+	 */
+	private CheckFilesFound(filesFound: Array<Uri>): Uri | undefined {
+		filesFound.sort((a, b) => a.toString().length - b.toString().length);
+		if (filesFound.length === 0) {
+			//TODO: Error message FileNotFound.
+		} else if (filesFound.length > 1) {
+			//TODO: Error message MultipleFilesFound.
+		}
+		else {
+			return filesFound[0];
+		}
+	}
+
+	/**
+	 * Checks the Project config.
+	 *
+	 * @private
+	 * @param {string} project
+	 * @returns {(Thenable<Uri | undefined>)}
+	 * @memberof TaskService
+	 */
+	private CheckProjectConfig(project: string): Thenable<Uri | undefined> {
+		let projectFile = Uri.parse(project);
+		let isCsproj = project.endsWith(".csproj");
+
+		// if it is a full path to a .csproj file
+		if (projectFile.scheme === "file" && isCsproj) {
+			//TODO: Check if file exists!
+			return Promise.resolve(projectFile);
+		}
+		// if it is not a full path but only a name of a .csproj file
+		else if (isCsproj) {
+			return workspace.findFiles("**/" + project).then(this.CheckFilesFound);
+		}
+		// if it is not a full path but only a folder name.
+		else {
+			return workspace.findFiles(project + "/**/*.csproj").then(this.CheckFilesFound);
+		}
+	}
+
+	/**
 	 * Start DotNetWatchTask when no project is configured.
 	 *
 	 * @private
@@ -197,44 +245,11 @@ export default class TaskService implements Disposable {
 	 */
 	private StartDotNetWatchTaskWithProjectConfig(config: DotNetAutoAttachDebugConfiguration): void {
 
-		// TODO: START with project from config.
-		let projectFile = Uri.parse(config.project);
-		let isCsproj = config.project.endsWith(".csproj");
-
-		// if it is a full path to a .csproj file
-		if (projectFile.scheme === "file" && isCsproj) {
-			TaskService.StartTask(TaskService.GenerateTask(config, projectFile));
-		}
-		// if it is not a full path but only a name of a .csproj file
-		else if (isCsproj) {
-			workspace.findFiles(config.project).then(k => {
-				if (k.length !== 0) {
-					// TODO: Is there a case where it could be more than one file ?
-					TaskService.StartTask(TaskService.GenerateTask(config, k[0]));
-				}
-				else {
-					workspace.findFiles("**/" + config.project).then(p => {
-						if (p.length !== 0) {
-							// TODO: Is there a case where it could be more than one file ?
-							TaskService.StartTask(TaskService.GenerateTask(config, p[0]));
-						} else {
-							DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config);
-						}
-					});
-				}
-			});
-		}
-		// if it is not a full path but only a folder name
-		else {
-			workspace.findFiles(config.project + "/*.csproj").then(k => {
-				if (k.length !== 0) {
-					// TODO: Is there a case where it could be more than one file ?
-					TaskService.StartTask(TaskService.GenerateTask(config, k[0]));
-				} else {
-					DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config);
-				}
-			});
-		}
+		this.CheckProjectConfig(config.project).then(value => {
+			if (value) {
+				TaskService.StartTask(TaskService.GenerateTask(config, value));
+			}
+		});
 	}
 
 	/**
