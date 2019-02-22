@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2019-02-02 10:33:23
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-19 13:53:01
+ * @Last Modified time: 2019-02-22 17:50:52
  */
 
 import { Disposable, QuickPickOptions, Uri, window } from "vscode";
@@ -112,7 +112,7 @@ export default class UiService implements Disposable {
 	 * @memberof UiService
 	 */
 	public ProjectDoesNotExistErrorMessage(debugConfig: DotNetAutoAttachDebugConfiguration): Thenable<string | undefined> {
-		return window.showErrorMessage("The configured project (" + debugConfig.project + ") of the debug config '" + debugConfig.name + "' within launch.json could not be found!");
+		return window.showErrorMessage("The configured project (" + debugConfig.project + ") of the debug config '" + debugConfig.name + "' within launch.json could not be found or is not unique!");
 	}
 
 	/**

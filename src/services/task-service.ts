@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-22 17:20:26
+ * @Last Modified time: 2019-02-22 17:52:15
  */
 
 import {
@@ -159,10 +159,8 @@ export default class TaskService implements Disposable {
 	 */
 	private CheckFilesFound(filesFound: Array<Uri>): Uri | undefined {
 		filesFound.sort((a, b) => a.toString().length - b.toString().length);
-		if (filesFound.length === 0) {
-			//TODO: Error message FileNotFound.
-		} else if (filesFound.length > 1) {
-			//TODO: Error message MultipleFilesFound.
+		if (filesFound.length === 0 || filesFound.length > 1) {
+			return undefined;
 		}
 		else {
 			return filesFound[0];
@@ -230,9 +228,13 @@ export default class TaskService implements Disposable {
 	 */
 	private StartDotNetWatchTaskWithProjectConfig(config: DotNetAutoAttachDebugConfiguration): void {
 
-		this.CheckProjectConfig(config.project).then(value => {
-			if (value) {
-				TaskService.StartTask(TaskService.GenerateTask(config, value));
+		this.CheckProjectConfig(config.project).then(projectUri => {
+			if (projectUri) {
+				TaskService.StartTask(TaskService.GenerateTask(config, projectUri));
+			}
+			// if no project not found or it isn't unique show error message.
+			else {
+				DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config);
 			}
 		});
 	}
