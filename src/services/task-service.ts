@@ -150,21 +150,6 @@ export default class TaskService implements Disposable {
 	}
 
 	/**
-	 * Start a new DotNet Watch Task
-	 *
-	 * @param {DotNetAutoAttachDebugConfiguration} config
-	 * @memberof TaskService
-	 */
-	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
-		// Check if there is a no project configured
-		if (!config.project || 0 === config.project.length) {
-			this.StartDotNetWatchTaskNoProjectConfig(config);
-		} else {
-			this.StartDotNetWatchTaskWithProjectConfig(config);
-		}
-	}
-
-	/**
 	 * Checks the files which where found.
 	 *
 	 * @private
@@ -250,6 +235,21 @@ export default class TaskService implements Disposable {
 				TaskService.StartTask(TaskService.GenerateTask(config, value));
 			}
 		});
+	}
+
+	/**
+	 * Start a new DotNet Watch Task
+	 *
+	 * @param {DotNetAutoAttachDebugConfiguration} config
+	 * @memberof TaskService
+	 */
+	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
+		// Check if there is a no project configured
+		if (!config.project || 0 === config.project.length) {
+			this.StartDotNetWatchTaskNoProjectConfig(config);
+		} else {
+			this.StartDotNetWatchTaskWithProjectConfig(config);
+		}
 	}
 
 	/**
