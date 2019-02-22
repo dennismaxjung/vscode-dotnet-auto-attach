@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-21 15:06:30
+ * @Last Modified time: 2019-02-22 18:15:38
  */
 
 "use strict";
@@ -149,7 +149,11 @@ export default class DebuggerService implements Disposable {
 				if (k) {
 					if (k === DebugDisconnectedEnum.Yes) {
 						baseConfig.processId = String(pid);
-						baseConfig.name += " - " + baseConfig.processId;
+						if (task) {
+							baseConfig.name = task.Project + " - " + baseConfig.name + " - " + baseConfig.processId;
+						} else {
+							baseConfig.name += " - " + baseConfig.processId;
+						}
 						DotNetAutoAttach.Cache.RunningDebugs.setValue(
 							pid,
 							{ name: baseConfig.name } as vscode.DebugSession
