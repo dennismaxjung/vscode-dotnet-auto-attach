@@ -53,7 +53,7 @@ When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you 
       "request": "launch",
       "name": ".NET Core Watch",
       "args": [
-        
+
       ],
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -61,6 +61,28 @@ When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you 
     },
 
 ```
+#### Sample launch config with specific project
+
+By specify a specific project to launch, you can bypass the project quick pick menu.
+
+```json
+    {
+      "type": "DotNetAutoAttach",
+      "request": "launch",
+      "name": ".NET Core Watch: dotnet-test.console",
+      "project": "dotnet-test.console.csproj",
+      "args": [
+
+      ],
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+
+```
+<p align="center">
+<img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/project-tree.png" alt="Project tree" width="326"><br/>
+</p>
 
 ### Configuration
 
