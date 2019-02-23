@@ -23,11 +23,15 @@ This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restart
 
 ### Solutions and Workspaces with multiple projects
 
+The extension supports solutions and workspaces with multi projects by letting you chose which project the auto-attacher should target.
+
 <p align="center">
 <img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/multi-project.png" alt="Multiproject Support" width="550"><br/>
 </p>
 
 ### Disconnection detection
+
+The extension notices when a project is no longer debugged and offers to re-attache if desired.
 
 <p align="center">
 <img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/disconnect.png" alt="Disconnect detected" width="550"><br/>
@@ -46,6 +50,13 @@ This is where ".NET Auto Attach" comes in and shines. After dotnet-watch restart
 
 When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you can debug your project. Pick the launch config from the dropdown on the Debug pane in Code. Press the play button or F5 to start.
 
+### Configuration
+
+The extension currently operates in only one mode - it can launch your project you want to debug with dotnet-watch.
+
+Just like when using the normal C# debugger, you configure the mode with a .vscode/launch.json file in the root directory of your project. 
+You can create this file manually, or Code will create one for you if you try to run your project and it doesn't exist yet.
+
 #### Sample launch config
 ```json
     {
@@ -61,9 +72,10 @@ When your ".NET: Auto Attach Debug (dotnet-watch)" launch config is set up, you 
     },
 
 ```
-#### Sample launch config with specific project
+#### Sample launch config for a specific project
 
-By specify a specific project to launch, you can bypass the project quick pick menu.
+The extension will normaly ask you which project should get launched when your workspace contains multiple projects.
+However, you can pre-set which project should get launched.
 
 ```json
     {
@@ -83,12 +95,6 @@ By specify a specific project to launch, you can bypass the project quick pick m
 <p align="center">
 <img src="https://gitlab.com/dennismaxjung/vscode-dotnet-auto-attach/raw/master/images/project-tree.png" alt="Project tree" width="326"><br/>
 </p>
-
-### Configuration
-
-The extension operates currently only in one mode - it can launch your project you want to debug with dotnet-watch.
-
-Just like when using the normal C# debugger, you configure the mode with a .vscode/launch.json file in the root directory of your project. You can create this file manually, or Code will create one for you if you try to run your project, and it doesn't exist yet.
 
 ## Release Notes & Known Issues
 

@@ -25,6 +25,28 @@ build_package:
       paths:
         - "*.vsix"
 
+build_package_release:
+    image: node:latest
+    stage: build
+    only:
+      - tags
+      - /^v.*$/
+    except:
+      - branches
+      - merge_requests
+    cache:
+      paths:
+      - node_modules/
+    script:
+      - npm install --unsafe-perm -g vsce
+      - npm install --unsafe-perm
+      - vsce package -o $CI_PROJECT_NAME-$CI_COMMIT_TAG.vsix --baseContentUrl $BASE_CONTENT_URL
+    artifacts:
+      name: "artifacts-$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+      paths:
+        - "*.vsix"
+
+
 #=================== DEPLOY - Package ==============#
 deploy_package:
     image: node:latest
@@ -39,7 +61,7 @@ deploy_package:
       GIT_STRATEGY: none
     script:
       - npm install --unsafe-perm -g vsce
-      - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN
+      - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN --packagePath $CI_PROJECT_NAME-$CI_COMMIT_TAG.vsix
 
 #=================== TEST ==========================#
 license_management:
