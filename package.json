@@ -16,7 +16,8 @@
 	],
 	"keywords": [
 		"C#",
-		"multi-root ready"
+		"multi-root ready",
+		"dotnet watch"
 	],
 	"icon": "images/icon.png",
 	"contributors": [
