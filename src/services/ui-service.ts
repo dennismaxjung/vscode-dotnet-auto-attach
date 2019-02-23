@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2019-02-02 10:33:23
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-22 17:50:52
+ * @Last Modified time: 2019-02-23 14:54:41
  */
 
 import { Disposable, QuickPickOptions, Uri, window } from "vscode";
@@ -101,7 +101,7 @@ export default class UiService implements Disposable {
 	 */
 	public TaskAlreadyStartedInformationMessage(projectName: string): Thenable<string | undefined> {
 		return window.showInformationMessage(
-			".NET Watch Task already started for the project " + projectName);
+			`.NET Watch Task already started for the project  ${projectName}.`);
 	}
 
 	/**
@@ -111,8 +111,17 @@ export default class UiService implements Disposable {
 	 * @returns {(Thenable<string | undefined>)}
 	 * @memberof UiService
 	 */
-	public ProjectDoesNotExistErrorMessage(debugConfig: DotNetAutoAttachDebugConfiguration): Thenable<string | undefined> {
-		return window.showErrorMessage("The configured project (" + debugConfig.project + ") of the debug config '" + debugConfig.name + "' within launch.json could not be found or is not unique!");
+	public ProjectDoesNotExistErrorMessage(debugConfig: DotNetAutoAttachDebugConfiguration): Thenable<boolean> {
+		return window.showErrorMessage(
+			`The debug configuration '${debugConfig.name}' within the launch.json references a project that cannot be found or is not unique (${debugConfig.project}).`
+			, "Open launch.json"
+		).then(value => {
+			if (value && value === "Open launch.json") {
+				return true;
+			} else {
+				return false;
+			}
+		});
 	}
 
 	/**

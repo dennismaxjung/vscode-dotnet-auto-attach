@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-22 17:52:15
+ * @Last Modified time: 2019-02-23 15:41:13
  */
 
 import {
@@ -17,6 +17,7 @@ import {
 	TaskProcessStartEvent,
 	tasks,
 	Uri,
+	window,
 	workspace
 } from "vscode";
 import DotNetAutoAttach from "../dotNetAutoAttach";
@@ -181,7 +182,6 @@ export default class TaskService implements Disposable {
 
 		// if it is a full path to a .csproj file
 		if (projectFile.scheme === "file" && isCsproj) {
-			//TODO: Check if file exists!
 			return Promise.resolve(projectFile);
 		}
 		// if it is not a full path but only a name of a .csproj file
@@ -234,7 +234,16 @@ export default class TaskService implements Disposable {
 			}
 			// if no project not found or it isn't unique show error message.
 			else {
-				DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config);
+				DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config).then(open => {
+					if (open) {
+						workspace.findFiles("**/launch.json").then(files => {
+							if (files && files.length > 0) {
+								workspace.openTextDocument(files[0]).then(doc => window.showTextDocument(doc));
+							}
+						}
+						);
+					}
+				});
 			}
 		});
 	}
