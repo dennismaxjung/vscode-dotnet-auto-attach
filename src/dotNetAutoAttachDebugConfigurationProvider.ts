@@ -2,15 +2,17 @@
  * @file Contains the DotNetAutoAttachDebugConfigurationProvider.
  * @Author: Dennis Jung
  * @Author: Konrad Müller
- * @Date: 2018-06-15 14:46:07
+ * @Date: 2019-02-16 22:01:33
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-15 12:00:43
+ * @Last Modified time: 2019-02-19 13:51:15
  */
 
 import {
 	CancellationToken,
+	DebugConfiguration,
 	DebugConfigurationProvider,
 	ProviderResult,
+	workspace,
 	WorkspaceFolder
 } from "vscode";
 import DotNetAutoAttach from "./dotNetAutoAttach";
@@ -25,6 +27,34 @@ import IDotNetAutoAttachDebugConfiguration from "./interfaces/IDotNetAutoAttachD
  */
 export default class DotNetAutoAttachDebugConfigurationProvider
 	implements DebugConfigurationProvider {
+
+	/**
+	 * Get the default DebugConfiguration for DotNetAutoAttach.
+	 *
+	 * @private
+	 * @static
+	 * @returns {DebugConfiguration}
+	 * @memberof DotNetAutoAttachDebugConfigurationProvider
+	 */
+	private static GetDefaultDotNetAutoAttachDebugConfig(project?: string): DebugConfiguration {
+		var defaultConfig: DebugConfiguration = {
+			type: "DotNetAutoAttach",
+			request: "launch",
+			name: ".NET Core Watch",
+			args: [],
+			env: {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			}
+		};
+
+		if (project && 0 !== project.length) {
+			defaultConfig.project = project;
+			defaultConfig.name += `: ${project}`;
+		}
+
+		return defaultConfig;
+	}
+
 	/**
 	 * Resolves a [debug configuration](#DebugConfiguration) by filling in missing values or by adding/changing/removing attributes.
 	 * If more than one debug configuration provider is registered for the same type, the resolveDebugConfiguration calls are chained
@@ -51,5 +81,38 @@ export default class DotNetAutoAttachDebugConfigurationProvider
 			DotNetAutoAttach.TaskService.StartDotNetWatchTask(debugConfiguration);
 		}
 		return undefined;
+	}
+
+	/**
+	 * Provides initial [debug configuration](#DebugConfiguration). If more than one debug configuration provider is
+	 * registered for the same type, debug configurations are concatenated in arbitrary order.
+	 * @param {(WorkspaceFolder | undefined)} folder The workspace folder for which the configurations are used or `undefined` for a folderless setup.
+	 * @param {CancellationToken} [token] A cancellation token.
+	 * @returns {ProviderResult<IDotNetAutoAttachDebugConfiguration[]>} An array of [debug configurations](#DebugConfiguration).
+	 * @memberof DotNetAutoAttachDebugConfigurationProvider
+	 */
+	public provideDebugConfigurations(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<Array<IDotNetAutoAttachDebugConfiguration>> {
+		if (folder) {
+			return Promise.resolve(
+				workspace.findFiles("**/*.csproj").then(k => {
+					var tmp = k.filter(m =>
+						m.toString().startsWith(folder.uri.toString())
+					);
+					if (tmp.length > 1) {
+						return DotNetAutoAttach.UiService.OpenMultiSelectProjectQuickPick(tmp).then(m => {
+							if (m && m.length !== 0) {
+								return m.map(o => DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig(o.label)) as Array<IDotNetAutoAttachDebugConfiguration>;
+							}
+							else {
+								return new Array<IDotNetAutoAttachDebugConfiguration>(DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig() as IDotNetAutoAttachDebugConfiguration);
+							}
+						});
+					} else {
+						return new Array<IDotNetAutoAttachDebugConfiguration>(DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig() as IDotNetAutoAttachDebugConfiguration);
+					}
+				}));
+		}
+		return new Array<IDotNetAutoAttachDebugConfiguration>(DotNetAutoAttachDebugConfigurationProvider.GetDefaultDotNetAutoAttachDebugConfig() as IDotNetAutoAttachDebugConfiguration);
+
 	}
 }

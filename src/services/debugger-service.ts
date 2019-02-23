@@ -4,13 +4,14 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-21 13:12:30
+ * @Last Modified time: 2019-02-23 16:09:44
  */
 
 "use strict";
 import * as vscode from "vscode";
 import { debug, Disposable } from "vscode";
 import DotNetAutoAttach from "../dotNetAutoAttach";
+import { DebugDisconnectedEnum } from "../enums/DebugDisconnectedEnum";
 
 /**
  * The DebuggerService. Provide functionality for starting, and manageing debug sessions.
@@ -114,20 +115,6 @@ export default class DebuggerService implements Disposable {
 					this.DisconnectDebugger(runningDebug);
 				}
 			});
-		/*
-				let runningDebugs = DotNetAutoAttach.Cache.RunningDebugs.keys();
-
-				// If matched processes does not have running debugs then we need to kill this debug
-				for (var debug of runningDebugs) {
-					if (matchedPids.indexOf(debug) < 0) {
-						// Disconnect old debug
-						const debugSession = DotNetAutoAttach.Cache.RunningDebugs.getValue(debug);
-						if (debugSession) {
-							debugSession.customRequest("disconnect");
-						}
-					}
-				}
-		*/
 	}
 
 	/**
@@ -158,39 +145,34 @@ export default class DebuggerService implements Disposable {
 			DotNetAutoAttach.Cache.RunningDebugs.setValue(pid, { name: "" } as vscode.DebugSession);
 			DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
 
-			vscode.window
-				.showInformationMessage(
-					`Debug disconnected. Reattach to ${task.Project} (${pid}) ?`,
-					"Yes",
-					"No",
-					"Stop watch task"
-				)
-				.then(k => {
-					if (k) {
-						if (k === "Yes") {
-							baseConfig.processId = String(pid);
+			DotNetAutoAttach.UiService.DebugDisconnectedInformationMessage(task.Project, pid).then(k => {
+				if (k) {
+					if (k === DebugDisconnectedEnum.Yes) {
+						baseConfig.processId = String(pid);
+						if (task) {
+							baseConfig.name = task.Project + " - " + baseConfig.name + " - " + baseConfig.processId;
+						} else {
 							baseConfig.name += " - " + baseConfig.processId;
-							DotNetAutoAttach.Cache.RunningDebugs.setValue(
-								pid,
-								{ name: baseConfig.name } as vscode.DebugSession
-							);
-							vscode.debug.startDebugging(undefined, baseConfig);
-						} else if (k === "Stop watch task") {
-							if (task) {
-								task.Terminate();
-								setTimeout(() => {
-									DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
-									DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
-								}, 2000);
-							}
 						}
-					} else {
+						DotNetAutoAttach.Cache.RunningDebugs.setValue(
+							pid,
+							{ name: baseConfig.name } as vscode.DebugSession
+						);
+						vscode.debug.startDebugging(undefined, baseConfig);
+					} else if (k === DebugDisconnectedEnum.Stop && task) {
+						task.Terminate();
 						setTimeout(() => {
+							DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
 							DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
-							DotNetAutoAttach.Cache.DisconnectedDebugs.add(pid);
-						}, 60000);
+						}, 2000);
 					}
-				});
+				} else {
+					setTimeout(() => {
+						DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
+						DotNetAutoAttach.Cache.DisconnectedDebugs.add(pid);
+					}, 60000);
+				}
+			});
 		}
 	}
 
