@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-13 20:33:10
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-22 18:15:38
+ * @Last Modified time: 2019-02-23 16:09:44
  */
 
 "use strict";
@@ -159,14 +159,12 @@ export default class DebuggerService implements Disposable {
 							{ name: baseConfig.name } as vscode.DebugSession
 						);
 						vscode.debug.startDebugging(undefined, baseConfig);
-					} else if (k === DebugDisconnectedEnum.Stop) {
-						if (task) {
-							task.Terminate();
-							setTimeout(() => {
-								DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
-								DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
-							}, 2000);
-						}
+					} else if (k === DebugDisconnectedEnum.Stop && task) {
+						task.Terminate();
+						setTimeout(() => {
+							DotNetAutoAttach.Cache.DisconnectedDebugs.delete(pid);
+							DotNetAutoAttach.Cache.RunningDebugs.remove(pid);
+						}, 2000);
 					}
 				} else {
 					setTimeout(() => {
