@@ -4,13 +4,12 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-16 15:44:50
+ * @Last Modified time: 2019-02-23 15:41:13
  */
 
 import {
 	Disposable,
 	ProcessExecution,
-	QuickPickOptions,
 	Task,
 	TaskDefinition,
 	TaskEndEvent,
@@ -24,7 +23,6 @@ import {
 import DotNetAutoAttach from "../dotNetAutoAttach";
 import DotNetAutoAttachDebugConfiguration from "../interfaces/IDotNetAutoAttachDebugConfiguration";
 import DotNetAutoAttachTask from "../models/DotNetAutoAttachTask";
-import ProjectQuickPickItem from "../models/ProjectQuickPickItem";
 
 /**
  * The TaskService, provides functions to manage tasks.
@@ -44,6 +42,7 @@ export default class TaskService implements Disposable {
 			tasks.onDidStartTaskProcess(TaskService.IsWatcherStartedSetProcessId)
 		);
 	}
+
 	/**
 	 * A list of all disposables.
 	 *
@@ -110,10 +109,7 @@ export default class TaskService implements Disposable {
 				);
 			});
 		} else {
-			window.showInformationMessage(
-				".NET Watch Task already started for the project " +
-					task.definition.type.replace("Watch ", "")
-			);
+			DotNetAutoAttach.UiService.TaskAlreadyStartedInformationMessage(task.definition.type.replace("Watch ", ""));
 		}
 	}
 
@@ -155,29 +151,63 @@ export default class TaskService implements Disposable {
 	}
 
 	/**
-	 * Start a new DotNet Watch Task
+	 * Checks the files which where found.
 	 *
+	 * @private
+	 * @param {Array<Uri>} filesFound
+	 * @returns {(Uri | undefined)}
+	 * @memberof TaskService
+	 */
+	private CheckFilesFound(filesFound: Array<Uri>): Uri | undefined {
+		filesFound.sort((a, b) => a.toString().length - b.toString().length);
+		if (filesFound.length === 0 || filesFound.length > 1) {
+			return undefined;
+		}
+		else {
+			return filesFound[0];
+		}
+	}
+
+	/**
+	 * Checks the Project config.
+	 *
+	 * @private
+	 * @param {string} project
+	 * @returns {(Thenable<Uri | undefined>)}
+	 * @memberof TaskService
+	 */
+	private CheckProjectConfig(project: string): Thenable<Uri | undefined> {
+		let projectFile = Uri.parse(project);
+		let isCsproj = project.endsWith(".csproj");
+
+		// if it is a full path to a .csproj file
+		if (projectFile.scheme === "file" && isCsproj) {
+			return Promise.resolve(projectFile);
+		}
+		// if it is not a full path but only a name of a .csproj file
+		else if (isCsproj) {
+			return workspace.findFiles("**/" + project).then(this.CheckFilesFound);
+		}
+		// if it is not a full path but only a folder name.
+		else {
+			return workspace.findFiles(project + "/**/*.csproj").then(this.CheckFilesFound);
+		}
+	}
+
+	/**
+	 * Start DotNetWatchTask when no project is configured.
+	 *
+	 * @private
 	 * @param {DotNetAutoAttachDebugConfiguration} config
 	 * @memberof TaskService
 	 */
-	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
+	private StartDotNetWatchTaskNoProjectConfig(config: DotNetAutoAttachDebugConfiguration): void {
 		workspace.findFiles("**/*.csproj").then(k => {
 			var tmp = k.filter(m =>
 				m.toString().startsWith(config.workspace.uri.toString())
 			);
 			if (tmp.length > 1) {
-				let quickPickOptions: QuickPickOptions = {
-					canPickMany: false,
-					placeHolder:
-						"Select the project to launch the DotNet Watch task for.",
-					matchOnDescription: true,
-					matchOnDetail: true
-				};
-				window
-					.showQuickPick(
-						tmp.map(k => new ProjectQuickPickItem(k)),
-						quickPickOptions
-					)
+				DotNetAutoAttach.UiService.OpenProjectQuickPick(tmp)
 					.then(s => {
 						if (s) {
 							TaskService.StartTask(TaskService.GenerateTask(config, s.uri));
@@ -188,6 +218,51 @@ export default class TaskService implements Disposable {
 			}
 		});
 	}
+
+	/**
+	 * Start DotNetWatchTask when projcet is configured.
+	 *
+	 * @private
+	 * @param {DotNetAutoAttachDebugConfiguration} config
+	 * @memberof TaskService
+	 */
+	private StartDotNetWatchTaskWithProjectConfig(config: DotNetAutoAttachDebugConfiguration): void {
+
+		this.CheckProjectConfig(config.project).then(projectUri => {
+			if (projectUri) {
+				TaskService.StartTask(TaskService.GenerateTask(config, projectUri));
+			}
+			// if no project not found or it isn't unique show error message.
+			else {
+				DotNetAutoAttach.UiService.ProjectDoesNotExistErrorMessage(config).then(open => {
+					if (open) {
+						workspace.findFiles("**/launch.json").then(files => {
+							if (files && files.length > 0) {
+								workspace.openTextDocument(files[0]).then(doc => window.showTextDocument(doc));
+							}
+						}
+						);
+					}
+				});
+			}
+		});
+	}
+
+	/**
+	 * Start a new DotNet Watch Task
+	 *
+	 * @param {DotNetAutoAttachDebugConfiguration} config
+	 * @memberof TaskService
+	 */
+	public StartDotNetWatchTask(config: DotNetAutoAttachDebugConfiguration) {
+		// Check if there is a no project configured
+		if (!config.project || 0 === config.project.length) {
+			this.StartDotNetWatchTaskNoProjectConfig(config);
+		} else {
+			this.StartDotNetWatchTaskWithProjectConfig(config);
+		}
+	}
+
 	/**
 	 * Dispose.
 	 *

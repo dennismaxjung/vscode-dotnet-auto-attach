@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-16 15:41:58
  * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-09-03 11:48:08
+ * @Last Modified time: 2019-02-02 10:43:19
  */
 
 import * as vscode from "vscode";
@@ -15,6 +15,7 @@ import CacheService from "./services/cache-service";
 import DebuggerService from "./services/debugger-service";
 import ProcessService from "./services/process-service";
 import TaskService from "./services/task-service";
+import UiService from "./services/ui-service";
 
 /**
  * The DotNetAutoAttach base class, contains instances of all it's services.
@@ -70,6 +71,15 @@ export default class DotNetAutoAttach implements Disposable {
 	public static readonly AttachService: AttachService = new AttachService();
 
 	/**
+	 * The UiService.
+	 *
+	 * @static
+	 * @type {UiService}
+	 * @memberof DotNetAutoAttach
+	 */
+	public static readonly UiService: UiService = new UiService();
+
+	/**
 	 * A list of all disposables.
 	 *
 	 * @private
@@ -113,6 +123,7 @@ export default class DotNetAutoAttach implements Disposable {
 
 		DotNetAutoAttach.Cache.dispose();
 		DotNetAutoAttach.DebugService.dispose();
+		DotNetAutoAttach.UiService.dispose();
 	}
 
 	/**
@@ -126,6 +137,7 @@ export default class DotNetAutoAttach implements Disposable {
 		DotNetAutoAttach.TaskService.dispose();
 		DotNetAutoAttach.ProcessService.dispose();
 		DotNetAutoAttach.AttachService.dispose();
+		DotNetAutoAttach.UiService.dispose();
 
 		DotNetAutoAttach.disposables.forEach(d => {
 			d.dispose();

@@ -10,3 +10,4 @@ package-lock.json
 vsc-extension-quickstart.md
 tslint.json
 .gitattributes
+.gitlab-ci.yml
