@@ -83,6 +83,8 @@ license_management:
     - tags
     - develop
     - merge_requests
+  variables:
+    NODE_ENV: production
 
 dependency_scanning:
   only:
