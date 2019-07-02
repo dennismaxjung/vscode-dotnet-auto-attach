@@ -69,6 +69,12 @@ deploy_package:
       - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN --packagePath $CI_PROJECT_NAME-$CI_COMMIT_TAG.vsix
 
 #=================== TEST ==========================#
+sast:
+  only:
+    - tags
+    - develop
+    - merge_requests
+
 license_management:
   image:
     name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
