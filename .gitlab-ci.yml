@@ -16,12 +16,12 @@ build_package:
     stage: build
     only:
      refs:
-      - tags
       - develop
       - merge_requests
     except:
      refs:
       - /^v.*$/
+      - schedules
      variables:
       - $SECURITY_ONLY
     cache:
@@ -42,12 +42,12 @@ build_package_release:
     stage: build
     only:
      refs:
-      - tags
       - /^v.*$/
     except:
      refs:
       - branches
       - merge_requests
+      - schedules
      variables:
       - $SECURITY_ONLY
     cache:
@@ -69,12 +69,12 @@ deploy_package:
     stage: deploy
     only:
      refs:
-      - tags
       - /^v.*$/
     except:
      refs:
       - branches
       - merge_requests
+      - schedules
      variables:
       - $SECURITY_ONLY
     variables:
@@ -117,5 +117,7 @@ code_quality:
     - develop
     - merge_requests
   except:
+   refs:
+    - schedules
    variables:
     - $SECURITY_ONLY
