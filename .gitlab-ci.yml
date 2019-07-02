@@ -15,11 +15,15 @@ build_package:
     image: node:latest
     stage: build
     only:
+     refs:
       - tags
       - develop
       - merge_requests
     except:
+     refs:
       - /^v.*$/
+     variables:
+      - $SECURITY_ONLY
     cache:
       paths:
       - node_modules/
@@ -37,11 +41,15 @@ build_package_release:
     image: node:latest
     stage: build
     only:
+     refs:
       - tags
       - /^v.*$/
     except:
+     refs:
       - branches
       - merge_requests
+     variables:
+      - $SECURITY_ONLY
     cache:
       paths:
       - node_modules/
@@ -60,11 +68,15 @@ deploy_package:
     image: node:latest
     stage: deploy
     only:
+     refs:
       - tags
       - /^v.*$/
     except:
+     refs:
       - branches
       - merge_requests
+     variables:
+      - $SECURITY_ONLY
     variables:
       GIT_STRATEGY: none
     script:
@@ -74,26 +86,42 @@ deploy_package:
 #=================== TEST ==========================#
 sast:
   only:
+   refs:
     - tags
     - develop
     - merge_requests
+    - schedules
+   variables:
+      - $SECURITY_ONLY
 
 license_management:
   only:
+   refs:
     - tags
     - develop
     - merge_requests
+    - schedules
+   variables:
+      - $SECURITY_ONLY
   variables:
     NODE_ENV: production
 
 dependency_scanning:
   only:
+   refs:
     - tags
     - develop
     - merge_requests
+    - schedules
+   variables:
+      - $SECURITY_ONLY
 
 code_quality:
   only:
+   refs:
     - tags
     - develop
     - merge_requests
+    - schedules
+   variables:
+      - $SECURITY_ONLY
