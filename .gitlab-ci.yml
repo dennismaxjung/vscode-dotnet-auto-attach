@@ -1,4 +1,7 @@
 #=================== Initial Configs ===============#
+include:
+  template: SAST.gitlab-ci.yml
+
 stages:
   - build
   - test
