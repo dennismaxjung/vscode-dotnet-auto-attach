@@ -91,8 +91,6 @@ sast:
     - develop
     - merge_requests
     - schedules
-   variables:
-      - $SECURITY_ONLY
 
 license_management:
   only:
@@ -101,8 +99,6 @@ license_management:
     - develop
     - merge_requests
     - schedules
-   variables:
-      - $SECURITY_ONLY
   variables:
     NODE_ENV: production
 
@@ -113,8 +109,6 @@ dependency_scanning:
     - develop
     - merge_requests
     - schedules
-   variables:
-      - $SECURITY_ONLY
 
 code_quality:
   only:
@@ -123,5 +117,3 @@ code_quality:
     - develop
     - merge_requests
     - schedules
-   variables:
-      - $SECURITY_ONLY
