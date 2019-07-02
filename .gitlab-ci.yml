@@ -116,4 +116,6 @@ code_quality:
     - tags
     - develop
     - merge_requests
-    - schedules
+  except:
+   variables:
+    - $SECURITY_ONLY
