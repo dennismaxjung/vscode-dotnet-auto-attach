@@ -117,7 +117,5 @@ code_quality:
     - develop
     - merge_requests
   except:
-   refs:
-    - develop
    variables:
     - $SECURITY_ONLY
