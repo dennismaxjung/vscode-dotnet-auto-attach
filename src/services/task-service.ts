@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
  * @Last Modified by: Luiz Stangarlin
- * @Last Modified time: 2019-12-24 12:34:56
+ * @Last Modified time: 2019-12-24 15:22:32
  */
 
 import {
@@ -129,9 +129,12 @@ export default class TaskService implements Disposable {
 		projectUri: Uri
 	): Task {
 		let projectName = "";
+		let projectPath = "";
 		const name = DotNetAutoAttachProject.extractProjectName(projectUri.fsPath);
-		if (name) {
+		const path = DotNetAutoAttachProject.extractProjectPath(projectUri.fsPath);
+		if (name && path) {
 			projectName = name;
+			projectPath = path;
 		}
 
 		let task: Task = new Task(
@@ -141,7 +144,7 @@ export default class TaskService implements Disposable {
 			"DotNet Auto Attach",
 			new ProcessExecution(
 				"dotnet",
-				["watch", "--project", projectUri.fsPath, "run"].concat(config.args),
+				["watch", "--project", projectPath, "run"].concat(config.args),
 				{ cwd: config.workspace.uri.fsPath, env: config.env }
 			),
 			"$mscompile"

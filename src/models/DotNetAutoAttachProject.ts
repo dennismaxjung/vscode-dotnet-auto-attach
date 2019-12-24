@@ -3,7 +3,7 @@
  * @Author: Luiz Stangarlin
  * @Date: 2019-12-24 12:40:26
  * @Last Modified by: Luiz Stangarlin
- * @Last Modified time: 2019-12-24 12:40:26
+ * @Last Modified time: 2019-12-24 15:14:39
  */
 
 /**
@@ -18,7 +18,7 @@ export default class DotNetAutoAttachProject {
 	/**
 	 * The supported kinds of projects.
 	 *
-	 * @public
+	 * @private
 	 * @static
 	 * @returns {Array<string>}
 	 * @memberof DotNetAutoAttachProject
@@ -57,7 +57,7 @@ export default class DotNetAutoAttachProject {
 	/**
 	 * Regex for finding the project name.
 	 *
-	 * @public
+	 * @private
 	 * @static
 	 * @returns {string}
 	 * @memberof DotNetAutoAttachProject
@@ -65,8 +65,18 @@ export default class DotNetAutoAttachProject {
 	private static nameRegex: RegExp = (() => {
 		const capture =
 			DotNetAutoAttachProject.supportedProjectKinds.join("|");
-		return RegExp(`/^.+(?:\/|\\).+[.](${capture})/`);
+		return RegExp(`^.*[\\/\\\\](.+[.](${capture}))$`);
 	})();
+
+	/**
+	 * Regex for finding the project path without root.
+	 *
+	 * @private
+	 * @static
+	 * @returns {string}
+	 * @memberof DotNetAutoAttachProject
+	 */
+	private static rootRegex: RegExp = /^[\\/\\\\](.+)$/;
 
 	/**
 	 * Extract the project name from the project path.
@@ -78,9 +88,26 @@ export default class DotNetAutoAttachProject {
 	 */
 	public static extractProjectName(fsPath: string): string | undefined {
 		const name_regex = DotNetAutoAttachProject.nameRegex;
-		let matches = name_regex.exec(fsPath);
-		if (matches && matches.length === 1) {
-			return matches[0];
+		const matches = name_regex.exec(fsPath);
+		if (matches && matches.length === 3) {
+			return matches[1];
+		}
+		return undefined;
+	}
+
+	/**
+	 * Extract the project name from the project path.
+	 *
+	 * @public
+	 * @static
+	 * @returns {string | undefined}
+	 * @memberof DotNetAutoAttachProject
+	 */
+	public static extractProjectPath(fsPath: string): string | undefined {
+		const root_regex = DotNetAutoAttachProject.rootRegex;
+		const matches = root_regex.exec(fsPath);
+		if (matches && matches.length === 2) {
+			return matches[1];
 		}
 		return undefined;
 	}

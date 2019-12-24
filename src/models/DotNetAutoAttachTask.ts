@@ -4,7 +4,7 @@
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:34:31
  * @Last Modified by: Luiz Stangarlin
- * @Last Modified time: 2019-12-24 12:21:49
+ * @Last Modified time: 2019-12-24 14:48:51
  */
 
 import { ProcessExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
@@ -34,7 +34,7 @@ export default class DotNetAutoAttachTask {
 		const name = DotNetAutoAttachProject.extractProjectName(this._projectPath);
 		if (name) {
 			this._project = name;
-			this._projectFolderPath = this._projectPath.substring(0, this.ProjectPath.length - this.Project.length - 2);
+			this._projectFolderPath = this._projectPath.substring(0, this._projectPath.length - this._project.length);
 		}
 	}
 	/**
