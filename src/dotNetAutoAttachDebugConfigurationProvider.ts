@@ -3,8 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2019-02-16 22:01:33
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-19 13:51:15
+ * @Last Modified by: Luiz Stangarlin
+ * @Last Modified time: 2019-12-24 12:41:07
  */
 
 import {
@@ -17,6 +17,7 @@ import {
 } from "vscode";
 import DotNetAutoAttach from "./dotNetAutoAttach";
 import IDotNetAutoAttachDebugConfiguration from "./interfaces/IDotNetAutoAttachDebugConfiguration";
+import DotNetAutoAttachProject from "./models/dotNetAutoAttachProject";
 
 /**
  * The DotNetAutoAttachDebugConfigurationProvider.
@@ -93,9 +94,10 @@ export default class DotNetAutoAttachDebugConfigurationProvider
 	 */
 	public provideDebugConfigurations(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<Array<IDotNetAutoAttachDebugConfiguration>> {
 		if (folder) {
+			const glob = DotNetAutoAttachProject.FilesGlob;
 			return Promise.resolve(
-				workspace.findFiles("**/*.csproj").then(k => {
-					var tmp = k.filter(m =>
+				workspace.findFiles(glob).then(k => {
+					const tmp = k.filter(m =>
 						m.toString().startsWith(folder.uri.toString())
 					);
 					if (tmp.length > 1) {

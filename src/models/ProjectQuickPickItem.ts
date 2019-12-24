@@ -3,11 +3,12 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 16:42:53
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2018-06-15 16:43:29
+ * @Last Modified by: Luiz Stangarlin
+ * @Last Modified time: 2019-12-24 12:22:33
  */
 
 import { QuickPickItem, Uri } from "vscode";
+import DotNetAutoAttachProject from "./dotNetAutoAttachProject";
 
 /**
  * The ProjectQuickPickItem. Represents Project that can be selected from
@@ -24,10 +25,9 @@ export default class ProjectQuickPickItem implements QuickPickItem {
 	 * @memberof ProjectQuickPickItem
 	 */
 	public constructor(uri: Uri) {
-		const name_regex = /^.+(\/|\\)(.+).csproj/;
-		let matches = name_regex.exec(uri.fsPath);
-		if (matches && matches.length === 3) {
-			this.label = matches[2];
+		const name = DotNetAutoAttachProject.extractProjectName(uri.fsPath);
+		if (name) {
+			this.label = name;
 		}
 		this.detail = uri.fsPath;
 		this.uri = uri;

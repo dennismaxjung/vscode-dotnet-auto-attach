@@ -3,11 +3,12 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:34:31
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-01-26 12:18:51
+ * @Last Modified by: Luiz Stangarlin
+ * @Last Modified time: 2019-12-24 12:21:49
  */
 
 import { ProcessExecution, Task, TaskExecution, WorkspaceFolder } from "vscode";
+import DotNetAutoAttachProject from "./dotNetAutoAttachProject";
 
 /**
  * The DotNetAutoAttachTask, represents a running AutoAttachTask
@@ -30,11 +31,10 @@ export default class DotNetAutoAttachTask {
 		this._projectPath = (this._taskExec.task
 			.execution as ProcessExecution).args[2];
 
-		const name_regex = /(^.+)(\\|\/)(.+.csproj)/;
-		let matches = name_regex.exec(this._projectPath);
-		if (matches && matches.length === 4) {
-			this._project = matches[3];
-			this._projectFolderPath = matches[1] + matches[2];
+		const name = DotNetAutoAttachProject.extractProjectName(this._projectPath);
+		if (name) {
+			this._project = name;
+			this._projectFolderPath = this._projectPath.substring(0, this.ProjectPath.length - this.Project.length - 2);
 		}
 	}
 	/**

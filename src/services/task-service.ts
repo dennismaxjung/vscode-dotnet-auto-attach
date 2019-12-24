@@ -3,8 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-15 14:31:53
- * @Last Modified by: Dennis Jung
- * @Last Modified time: 2019-02-23 15:41:13
+ * @Last Modified by: Luiz Stangarlin
+ * @Last Modified time: 2019-12-24 12:34:56
  */
 
 import {
@@ -22,6 +22,7 @@ import {
 } from "vscode";
 import DotNetAutoAttach from "../dotNetAutoAttach";
 import DotNetAutoAttachDebugConfiguration from "../interfaces/IDotNetAutoAttachDebugConfiguration";
+import DotNetAutoAttachProject from "../models/dotNetAutoAttachProject";
 import DotNetAutoAttachTask from "../models/DotNetAutoAttachTask";
 
 /**
@@ -128,10 +129,9 @@ export default class TaskService implements Disposable {
 		projectUri: Uri
 	): Task {
 		let projectName = "";
-		const name_regex = /^.+(\/|\\)(.+).csproj/;
-		let matches = name_regex.exec(projectUri.fsPath);
-		if (matches && matches.length === 3) {
-			projectName = matches[2];
+		const name = DotNetAutoAttachProject.extractProjectName(projectUri.fsPath);
+		if (name) {
+			projectName = name;
 		}
 
 		let task: Task = new Task(
@@ -178,19 +178,21 @@ export default class TaskService implements Disposable {
 	 */
 	private CheckProjectConfig(project: string): Thenable<Uri | undefined> {
 		let projectFile = Uri.parse(project);
-		let isCsproj = project.endsWith(".csproj");
+		let isKnownProj = DotNetAutoAttachProject.SupportedFileExtensions
+			.some(proj => project.endsWith(`.${proj}`));
 
-		// if it is a full path to a .csproj file
-		if (projectFile.scheme === "file" && isCsproj) {
+		// if it is a full path to a .*proj file
+		if (projectFile.scheme === "file" && isKnownProj) {
 			return Promise.resolve(projectFile);
 		}
-		// if it is not a full path but only a name of a .csproj file
-		else if (isCsproj) {
-			return workspace.findFiles("**/" + project).then(this.CheckFilesFound);
+		// if it is not a full path but only a name of a .*proj file
+		else if (isKnownProj) {
+			return workspace.findFiles(`**/${project}`).then(this.CheckFilesFound);
 		}
 		// if it is not a full path but only a folder name.
 		else {
-			return workspace.findFiles(project + "/**/*.csproj").then(this.CheckFilesFound);
+			const glob = DotNetAutoAttachProject.FilesGlob;
+			return workspace.findFiles(`${project}/${glob}`).then(this.CheckFilesFound);
 		}
 	}
 
@@ -202,7 +204,8 @@ export default class TaskService implements Disposable {
 	 * @memberof TaskService
 	 */
 	private StartDotNetWatchTaskNoProjectConfig(config: DotNetAutoAttachDebugConfiguration): void {
-		workspace.findFiles("**/*.csproj").then(k => {
+		const glob = DotNetAutoAttachProject.FilesGlob;
+		workspace.findFiles(glob).then(k => {
 			var tmp = k.filter(m =>
 				m.toString().startsWith(config.workspace.uri.toString())
 			);
