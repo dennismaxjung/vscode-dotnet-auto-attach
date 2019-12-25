@@ -3,8 +3,8 @@
  * @Author: Dennis Jung
  * @Author: Konrad Müller
  * @Date: 2018-06-16 18:53:11
- * @Last Modified by: Dmitry Kosinov
- * @Last Modified time: 2019-02-06 16:27:08
+ * @Last Modified by: Luiz Stangarlin
+ * @Last Modified time: 2019-12-25 02:52:24
  */
 
 import { clearInterval, setInterval } from "timers";
@@ -100,8 +100,8 @@ export default class AttachService implements Disposable {
 	 * @memberof AttachService
 	 */
 	private ScanToAttach(): void {
-		var processesToScan = new Array<ProcessDetail>();
-		var runningTasks = DotNetAutoAttach.Cache.RunningAutoAttachTasks;
+		let processesToScan = new Array<ProcessDetail>();
+		let runningTasks = DotNetAutoAttach.Cache.RunningAutoAttachTasks;
 		runningTasks.forEach((k, v) => {
 			if (v && v.ProcessId) {
 				processesToScan = processesToScan.concat(
@@ -111,25 +111,22 @@ export default class AttachService implements Disposable {
 		});
 		let matchedProcesses = new Array<number>();
 
+		const pathRgx = /(?:\"?dotnet(?:[.]exe)?\"? exec \"?(.+)\"?|^\"([^\"]+)\"|^([^ ]+[ ]))/;
 		processesToScan.forEach(p => {
-			if (
-				(p.cml.startsWith('"dotnet" exec ') ||
-					p.cml.startsWith("dotnet exec ")) &&
-				DotNetAutoAttach.AttachService.CheckForWorkspace(p)
-			) {
-				const pathRgx = /^\"?dotnet\"? exec \"?(.+)\"?/;
-				let matches = pathRgx.exec(p.cml);
-				let path = "";
-				if (matches && matches.length === 2) {
-					path = matches[1];
-				}
-				matchedProcesses.push(p.pid);
+			let matches = pathRgx.exec(p.cml);
+			if (matches && matches.length === 4) {
+				matches.shift();
+				let path = matches.join('');
+				let workFolder = DotNetAutoAttach.AttachService.CheckForWorkspace(path);
+				if (workFolder) {
+					matchedProcesses.push(p.pid);
 
-				DotNetAutoAttach.DebugService.AttachDotNetDebugger(
-					p.pid,
-					AttachService.GetDefaultConfig(),
-					path
-				);
+					DotNetAutoAttach.DebugService.AttachDotNetDebugger(
+						p.pid,
+						AttachService.GetDefaultConfig(),
+						workFolder
+					);
+				}
 			}
 		});
 		DotNetAutoAttach.DebugService.DisconnectOldDotNetDebugger(matchedProcesses);
@@ -140,25 +137,21 @@ export default class AttachService implements Disposable {
 	 *
 	 * @private
 	 * @static
-	 * @param {ProcessDetail} process
-	 * @returns {boolean}
+	 * @param {string} processArgument
+	 * @returns {string | undefined}
 	 * @memberof AttachService
 	 */
-	private CheckForWorkspace(process: ProcessDetail): boolean {
-		if (vscode.workspace.workspaceFolders) {
-			for (var element of vscode.workspace.workspaceFolders) {
-				var path = vscode.Uri.file(
-					process.cml
-						.replace("dotnet exec ", "")
-						.replace('"dotnet" exec ', "")
-						.replace('"', "")
-				);
-				if (path.fsPath.includes(element.uri.fsPath)) {
-					return true;
+	private CheckForWorkspace(processArgument: string): string | undefined {
+		const rgx = /msbuild/gi; //false positive
+		if (vscode.workspace.workspaceFolders && !rgx.test(processArgument)) {
+			for (let element of vscode.workspace.workspaceFolders) {
+				let workFolder = element.uri.fsPath;
+				if (processArgument.includes(workFolder)) {
+					return workFolder;
 				}
 			}
 		}
-		return false;
+		return undefined;
 	}
 
 	/**

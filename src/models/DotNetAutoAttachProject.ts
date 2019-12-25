@@ -3,7 +3,7 @@
  * @Author: Luiz Stangarlin
  * @Date: 2019-12-24 12:40:26
  * @Last Modified by: Luiz Stangarlin
- * @Last Modified time: 2019-12-24 15:14:39
+ * @Last Modified time: 2019-12-25 02:28:02
  */
 
 /**
@@ -79,7 +79,7 @@ export default class DotNetAutoAttachProject {
 	private static rootRegex: RegExp = /^[\\/\\\\](.+)$/;
 
 	/**
-	 * Extract the project name from the project path.
+	 * Extract the project name from the project file path.
 	 *
 	 * @public
 	 * @static
@@ -96,7 +96,7 @@ export default class DotNetAutoAttachProject {
 	}
 
 	/**
-	 * Extract the project name from the project path.
+	 * Extract the project path from the project file path.
 	 *
 	 * @public
 	 * @static

@@ -2,7 +2,7 @@
 	"name": "vscode-dotnet-auto-attach",
 	"displayName": ".NET Auto Attach",
 	"description": "Automatically attach the debugger to a dotnet process started with dotnet-watch.",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"publisher": "DennisMaxJung",
 	"engines": {
 		"vscode": "^1.31.1"
@@ -16,6 +16,7 @@
 	],
 	"keywords": [
 		"C#",
+		"F#",
 		"multi-root ready",
 		"dotnet watch"
 	],
@@ -40,6 +41,7 @@
 	"activationEvents": [
 		"onDebug",
 		"onLanguage:csharp",
+		"onLanguage:fsharp",
 		"*"
 	],
 	"main": "./out/extension",
